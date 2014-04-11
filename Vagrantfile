@@ -22,7 +22,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     v.cpus = 1
   end
 
-  config.vm.define "dash" do |v|
+  config.vm.define "dash", primary: true do |v|
     v.vm.provision :shell, :path => "bootstrap_cdash.sh"
     v.vm.network "private_network", ip: "192.168.33.10"
     v.vm.box = "WardF/precise64"
