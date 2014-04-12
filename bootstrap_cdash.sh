@@ -5,13 +5,26 @@
 apt-get update
 
 export DEBIAN_FRONTEND=noninteractive
-apt-get -y -q install wget apache2 mysql-server php5 php5-mysql php5-xsl php5-curl php5-gd
+apt-get -y -q install wget apache2 mysql-server php5 php5-mysql php5-xsl php5-curl php5-gd unzip subversion
 
+##### 
+# Install CDash, configure mysql
+#####
+
+sudo -i -u vagrant svn co https://www.kitware.com/svn/CDash/Release-2-0-2 CDash
+
+mysql -u root -e "grant all on *.* to 'cdash'@'localhost'"
+
+
+
+exit 0
 
 #####
 # Configure mysql. It will live in /vagrant/mysql.
 # This must be created, if need be. 
 #####
+
+
 
 ###
 # Move data directory.
