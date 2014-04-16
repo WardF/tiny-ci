@@ -38,15 +38,15 @@ echo 'CTEST_HOME="/home/vagrant/ctest_scripts"' >> $CTEST_INIT
 echo 'DASH="$CTEST_HOME/Dashboards"' >> $CTEST_INIT
 echo '/bin/su vagrant -c "/bin/mkdir -p $CTEST_HOME"' >> $CTEST_INIT
 
-echo "if [ -d /media/psf/vagrant ]; then" >> /$CTEST_INIT
-echo "find /media/psf/vagrant -maxdepth 1 -type f -exec cp {} /home/vagrant/ctest_scripts \;" >> /$CTEST_INIT
-echo "fi" >> /$CTEST_INIT
-echo "" >> /$CTEST_INIT
+echo "if [ -d /media/psf/vagrant ]; then" >> $CTEST_INIT
+echo "find /media/psf/vagrant -maxdepth 1 -type f -exec cp {} /home/vagrant/ctest_scripts \;" >> $CTEST_INIT
+echo "fi" >> $CTEST_INIT
+echo "" >> $CTEST_INIT
 
-echo "if [ -d /vagrant ]; then" >> /$CTEST_INIT
-echo "find /vagrant -maxdepth 1 -type f -exec cp {} /home/vagrant/ctest_scripts \;" >> /$CTEST_INIT
-echo "fi" >> /$CTEST_INIT
-
+echo "if [ -d /vagrant ]; then" >> $CTEST_INIT
+echo "find /vagrant -maxdepth 1 -type f -exec cp {} /home/vagrant/ctest_scripts \;" >> $CTEST_INIT
+echo "fi" >> $CTEST_INIT
+echo "chown -R vagrant:vagrant /home/vagrant/ctest_scripts" >> $CTEST_INIT 
 echo 'case "$1" in' >> $CTEST_INIT
 echo ' start)' >> $CTEST_INIT
 echo ' if [ ! -f /usr/local/bin/ctest ]; then' >> $CTEST_INIT
@@ -61,6 +61,7 @@ echo '	;;' >> $CTEST_INIT
 echo ' stop)' >> $CTEST_INIT
 echo '	    echo $"Stopping ctest"' >> $CTEST_INIT
 echo '      /bin/su vagrant -c "/usr/bin/killall ctest"' >> $CTEST_INIT
+echo '      /bin/su vagrant -c "/bin/ps aux | grep ctest"' >> $CTEST_INIT 
 echo ' 	;;' >> $CTEST_INIT
 echo ' *)' >> $CTEST_INIT
 echo ' 	echo $"Usage: $0 {start|stop}"' >> $CTEST_INIT

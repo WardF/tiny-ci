@@ -23,11 +23,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   config.vm.define "dash", primary: true do |v|
-    v.vm.provision :shell, :path => "bootstrap_cdash.sh"
+    v.vm.provision :shell, :path => "bootstrap_dashboard.sh"
     v.vm.network "private_network", ip: "192.168.33.10"
-    v.vm.network "forwarded_port", host: 4444, guest: 80
     v.vm.box = "WardF/precise64"
-
   end
 
   config.vm.define "client" do |v|

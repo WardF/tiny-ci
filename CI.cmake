@@ -3,6 +3,15 @@
 #####
 set (CTEST_PROJECT_NAME "netcdf-c")
 
+set(DART_TESTING_TIMEOUT "4800")
+
+set(CTEST_NIGHTLY_START_TIME "00:00:00 EST")
+
+set(CTEST_DROP_METHOD "http")
+set(CTEST_DROP_SITE "192.168.33.10") 
+set(CTEST_DROP_LOCATION "/CDash/submit.php?project=netcdf-c")
+set(CTEST_DROP_SITE_CDASH TRUE)
+
 
 # Get Hostname
 find_program(HOSTNAME_CMD NAMES hostname)
@@ -19,11 +28,17 @@ getuname(osrel  -r)
 getuname(cpu    -m)
 set(CTEST_BUILD_NAME        "${osname}-${osrel}-${cpu}")
 
+# Determine unique identifier to append.
+exec_program("date" ARGS "+%s" OUTPUT_VARIABLE "TIME_IDENTIFIER")
+
+
 # Set locations of src/build
 set (CTEST_DASHBOARD_ROOT "${CTEST_SCRIPT_DIRECTORY}/Dashboards")
-SET (CTEST_SOURCE_DIRECTORY "${CTEST_DASHBOARD_ROOT}/netcdf-src")
-SET (CTEST_BINARY_DIRECTORY "${CTEST_DASHBOARD_ROOT}/builds/build-cont")
+SET (CTEST_SOURCE_DIRECTORY "${CTEST_DASHBOARD_ROOT}/netcdf-src-${TIME_IDENTIFIER}")
+SET (CTEST_BINARY_DIRECTORY "${CTEST_DASHBOARD_ROOT}/build-cont-${TIME_IDENTIFIER}")
+
 set(ENV{LC_ALL} C)
+SET (CTEST_BACKUP_AND_RESTORE TRUE)
 
 ####
 # End Test/System Setup
@@ -35,16 +50,21 @@ FIND_PROGRAM(GITNAMES NAMES git)
 set (CTEST_GIT_COMMAND ${GITNAMES})
 set (CTEST_COMMAND "\"${CTEST_EXECUTABLE_NAME}\" -D Continuous")
 
-set (CTEST_CHECKOUT_COMMAND "${CTEST_GIT_COMMAND} clone file:///vagrant/netcdf-c ${CTEST_SOURCE_DIRECTORY}")
-set (CTEST_UPDATE_COMMAND ${CTEST_GIT_COMMAND})
+set (CTEST_CHECKOUT_COMMAND "${CTEST_GIT_COMMAND} clone /vagrant/netcdf-c ${CTEST_SOURCE_DIRECTORY}")
+set (CTEST_UPDATE_COMMAND "${CTEST_GIT_COMMAND}")
 set (CTEST_START_WITH_EMPTY_BINARY_DIRECTORY TRUE)
+
+# Copy the Dashboard configuration to the source directory.
+exec_program("cp" ARGS "/vagrant/CTestConfig.cmake ${CTEST_SOURCE_DIRECTORY}" OUTPUT_VARIABLE "RETCODE")
+MESSAGE("RETCODE: ${RETCODE}")
 
 ## Set CTest Options
 set(OPTIONS -DENABLE_EXTRA_TESTS=ON -DENABLE_HDF4=ON -DNC_CTEST_DROP_LOC_PREFIX=/CDash -DNC_CTEST_DROP_SITE=192.168.33.10)
 
 ## Kick off the test
-SET (CTEST_START_WITH_EMPTY_BINARY_DIRECTORY_ONCE 1)
+SET(CTEST_START_WITH_EMPTY_BINARY_DIRECTORY TRUE)
 set (first_loop 1)
+
 ctest_start("Continuous")
 
 while (${CTEST_ELAPSED_TIME} GREATER -1)
@@ -52,6 +72,7 @@ while (${CTEST_ELAPSED_TIME} GREATER -1)
 	ctest_update(RETURN_VALUE count)
 	message("Count: ${count}")
 	if (count GREATER 0 OR first_loop GREATER 0)
+		CTEST_EMPTY_BINARY_DIRECTORY(${CTEST_BINARY_DIRECTORY})
 		SET(CTEST_BUILD_NAME	"${CTEST_BUILD_NAME}-1")
 		
 		message("Count ${count} > 0, running analysis.")
