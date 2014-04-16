@@ -1,4 +1,6 @@
-# tiny-ci: A Tiny, Self-Contained NetCDF-C Continuous Integration Instance and Dashboard
+# Tiny-CI
+
+A Tiny, Self-Contained NetCDF-C Continuous Integration Instance and Dashboard
 
 # Overview
 
