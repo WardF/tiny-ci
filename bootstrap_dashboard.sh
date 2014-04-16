@@ -62,10 +62,16 @@ if [ ! -f /var/www/CDash ]; then
     apache2ctl restart
 fi
 
+chmod -R 777 /var/www/CDash
+
 # Clone a base netcdf-c directory to work from and to monitor for changes.
 
 if [ ! -f /vagrant/netcdf-c ]; then
-    git clone git://github.com/Unidata/netcdf-c /vagrant/netcdf-c
+    VFILE="/vagrant/NETCDF_MISSING_RUNME.sh"
+    echo '#!/bin/bash' > $VFILE
+    echo 'git clone https://github.com/Unidata/netcdf-c' >> $VFILE
+    echo 'rm $0' >> $VFILE
+    chmod 755 $VFILE
 fi
 
 exit 0
