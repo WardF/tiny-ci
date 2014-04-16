@@ -28,10 +28,32 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     v.vm.box = "WardF/precise64"
   end
 
-  config.vm.define "client" do |v|
+  ######
+  # Ubuntu Boxes
+  ######
+  config.vm.define "s64" do |v|
+    v.vm.provision :shell, :path => "bootstrap_ci.sh"
+    v.vm.box = "WardF/saucy64"
+  end
+
+  config.vm.define "s32" do |v|
+    v.vm.provision :shell, :path => "bootstrap_ci.sh"
+    v.vm.box = "WardF/saucy32"
+  end
+
+  config.vm.define "p64" do |v|
     v.vm.provision :shell, :path => "bootstrap_ci.sh"
     v.vm.box = "WardF/precise64"
   end
+
+  config.vm.define "p32" do |v|
+    v.vm.provision :shell, :path => "bootstrap_ci.sh"
+    v.vm.box = "WardF/precise32"
+  end
+
+  ######
+  # End Ubuntu Boxes
+  ######
 
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.

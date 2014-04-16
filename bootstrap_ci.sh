@@ -53,7 +53,7 @@ echo ' if [ ! -f /usr/local/bin/ctest ]; then' >> $CTEST_INIT
 echo '    echo "ctest not found"' >> $CTEST_INIT
 echo '    exit 1' >> $CTEST_INIT
 echo ' fi' >> $CTEST_INIT
-echo '      /bin/su vagrant -c "/bin/rm -rf $DASH"' >> $CTEST_INIT
+#echo '      /bin/su vagrant -c "/bin/rm -rf $DASH"' >> $CTEST_INIT
 echo '	    echo $"Starting ctest"' >> $CTEST_INIT
 echo '      cd /home/vagrant/ctest_scripts/' >> $CTEST_INIT
 echo '      /bin/su vagrant -c "/usr/local/bin/ctest -V -S CI.cmake > continuous_test.out 2>&1 &"' >> $CTEST_INIT
