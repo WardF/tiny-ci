@@ -38,14 +38,29 @@ echo 'CTEST_HOME="/home/vagrant/ctest_scripts"' >> $CTEST_INIT
 echo 'DASH="$CTEST_HOME/Dashboards"' >> $CTEST_INIT
 echo '/bin/su vagrant -c "/bin/mkdir -p $CTEST_HOME"' >> $CTEST_INIT
 
-echo "if [ -d /media/psf/vagrant ]; then" >> $CTEST_INIT
-echo "find /media/psf/vagrant -maxdepth 1 -type f -exec cp {} /home/vagrant/ctest_scripts \;" >> $CTEST_INIT
-echo "fi" >> $CTEST_INIT
-echo "" >> $CTEST_INIT
+#echo "if [ -d /media/psf/vagrant ]; then" >> $CTEST_INIT
+#echo "find /media/psf/vagrant -maxdepth 1 -type f -exec cp {} /home/vagrant/ctest_scripts \;" >> $CTEST_INIT
+#echo "fi" >> $CTEST_INIT
+#echo "" >> $CTEST_INIT
+
+echo "count=0" >> $CTEST_INIT
+echo "while [ $count -lt 10 ]; do" >> $CTEST_INIT
+echo " if [ -d /vagrant ]; then" >> $CTEST_INIT
+echo "   count=50" >> $CTEST_INIT
+echo " else" >> $CTEST_INIT
+echo '   echo "Waiting for /vagrant to be mounted."' >> $CTEST_INIT
+echo '   count=`expr $count + 1`' >> $CTEST_INIT
+echo '   sleep 5' >> $CTEST_INIT
+echo ' fi' >> $CTEST_INIT
+echo 'done' >> $CTEST_INIT
 
 echo "if [ -d /vagrant ]; then" >> $CTEST_INIT
 echo "find /vagrant -maxdepth 1 -type f -exec cp {} /home/vagrant/ctest_scripts \;" >> $CTEST_INIT
+echo "else" >> $CTEST_INIT
+echo "exit 1" >> $CTEST_INIT
 echo "fi" >> $CTEST_INIT
+
+
 echo "chown -R vagrant:vagrant /home/vagrant/ctest_scripts" >> $CTEST_INIT 
 echo 'case "$1" in' >> $CTEST_INIT
 echo ' start)' >> $CTEST_INIT
@@ -53,7 +68,7 @@ echo ' if [ ! -f /usr/local/bin/ctest ]; then' >> $CTEST_INIT
 echo '    echo "ctest not found"' >> $CTEST_INIT
 echo '    exit 1' >> $CTEST_INIT
 echo ' fi' >> $CTEST_INIT
-#echo '      /bin/su vagrant -c "/bin/rm -rf $DASH"' >> $CTEST_INIT
+echo '      /bin/rm -rf $DASH' >> $CTEST_INIT
 echo '	    echo $"Starting ctest"' >> $CTEST_INIT
 echo '      cd /home/vagrant/ctest_scripts/' >> $CTEST_INIT
 echo '      /bin/su vagrant -c "/usr/local/bin/ctest -V -S CI.cmake > continuous_test.out 2>&1 &"' >> $CTEST_INIT
@@ -71,7 +86,7 @@ echo 'esac' >> $CTEST_INIT
 
 echo 'exit $RETVAL' >> $CTEST_INIT
 chmod 755 $CTEST_INIT
-update-rc.d ctest defaults
+update-rc.d ctest defaults 99
 
 
 ####
