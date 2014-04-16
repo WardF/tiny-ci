@@ -3,14 +3,14 @@
 #####
 set (CTEST_PROJECT_NAME "netcdf-c")
 
-set(DART_TESTING_TIMEOUT "4800")
+#set(DART_TESTING_TIMEOUT "4800")
 
-set(CTEST_NIGHTLY_START_TIME "00:00:00 EST")
+#set(CTEST_NIGHTLY_START_TIME "00:00:00 EST")
 
-set(CTEST_DROP_METHOD "http")
-set(CTEST_DROP_SITE "192.168.33.10") 
-set(CTEST_DROP_LOCATION "/CDash/submit.php?project=netcdf-c")
-set(CTEST_DROP_SITE_CDASH TRUE)
+#set(CTEST_DROP_METHOD "http")
+#set(CTEST_DROP_SITE "192.168.33.10") 
+#set(CTEST_DROP_LOCATION "/CDash/submit.php?project=netcdf-c")
+#set(CTEST_DROP_SITE_CDASH TRUE)
 
 
 # Get Hostname
