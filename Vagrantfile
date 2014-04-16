@@ -31,6 +31,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   config.vm.define "client" do |v|
+    v.vm.provision :shell, :path => "bootstrap_ci.sh"
     v.vm.box = "WardF/precise64"
   end
 

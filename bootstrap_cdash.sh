@@ -5,7 +5,7 @@
 apt-get update
 
 export DEBIAN_FRONTEND=noninteractive
-apt-get -y -q install wget apache2 mysql-server php5 php5-mysql php5-xsl php5-curl php5-gd unzip subversion links
+apt-get -y -q install wget apache2 mysql-server php5 php5-mysql php5-xsl php5-curl php5-gd unzip subversion links git htop midori
 
 ##### 
 # Install CDash, configure mysql
@@ -23,11 +23,11 @@ echo '?>' >> /var/www/info.php
 ###
 if [ ! -f /var/www/CDash ]; then
     # Stop mysql for the time being.
-    stop mysql
+    # stop mysql
 
-    svn co https://www.kitware.com/svn/CDash/Release-2-0-2 CDash
+    svn co --non-interactive --trust-server-cert https://www.kitware.com/svn/CDash/Release-2-0-2 CDash
     # Start mysql back up.
-    start mysql
+    # start mysql
 
     # Configure MySQL
     # Add cdash database, user.
@@ -63,7 +63,10 @@ if [ ! -f /var/www/CDash ]; then
 fi
 
 # Clone a base netcdf-c directory to work from and to monitor for changes.
-clone git://github.com/Unidata/netcdf-c /vagrant/netcdf-c
+
+if [ ! -f /vagrant/netcdf-c ]; then
+    git clone git://github.com/Unidata/netcdf-c /vagrant/netcdf-c
+fi
 
 exit 0
 
