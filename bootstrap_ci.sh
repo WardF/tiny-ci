@@ -23,21 +23,17 @@ $PKG_UPDATE
 $PKG_CMD -y install $PKG_LIST
 $GRP_LIST
 #####
-# Enable Cron to run 
+# Enable Cron to run automatically.
 #####
 if [ `which update-rc.d | wc -w` -gt 0 ]; then
-    update-rc.d crond defaults
+    update-rc.d cron defaults
 elif [ `which chkconfig | wc -w` -gt 0 ]; then
     chkconfig crond on
 fi
 
+##### 
+# Install CTest as a script in the 'vagrant' home directory.
 #####
-# Install ctest as a system service.
-# It is installed into /etc/init.d/ctest
-#####
-
-# Create a ctest user.
-
 CTEST_INIT="/home/vagrant/ctest_service.sh"
 
 echo '#!/bin/bash' > $CTEST_INIT
@@ -138,5 +134,5 @@ fi
 
 chown -R vagrant:vagrant /home/vagrant
 
-$CTEST_INIT
+sudo -i -u vagrant $CTEST_INIT
 
