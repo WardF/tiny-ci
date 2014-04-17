@@ -54,6 +54,22 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   ######
   # End Ubuntu Boxes
   ######
+  
+  ######
+  # Start CentOS Boxes
+  ######
+
+  config.vm.define "cent64" do |v|
+    v.vm.provision :shell, :path => "bootstrap_ci.sh"
+    v.vm.box = "WardF/centos64"
+  end
+  
+  ######
+  # End CentOS Boxes
+  ######
+
+
+
 
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
