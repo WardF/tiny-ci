@@ -22,6 +22,14 @@ fi
 $PKG_UPDATE
 $PKG_CMD -y install $PKG_LIST
 $GRP_LIST
+#####
+# Enable Cron to run 
+#####
+if [ `which update-rc.d | wc -w` -gt 0 ]; then
+    update-rc.d crond defaults
+elif [ `which chkconfig | wc -w` -gt 0 ]; then
+    chkconfig crond on
+fi
 
 #####
 # Install ctest as a system service.
@@ -29,22 +37,16 @@ $GRP_LIST
 #####
 
 # Create a ctest user.
-useradd ctest
 
-CTEST_INIT="/etc/init.d/ctest"
+CTEST_INIT="/home/vagrant/ctest_service.sh"
 
 echo '#!/bin/bash' > $CTEST_INIT
 echo 'CTEST_HOME="/home/vagrant/ctest_scripts"' >> $CTEST_INIT
 echo 'DASH="$CTEST_HOME/Dashboards"' >> $CTEST_INIT
-echo '/bin/su vagrant -c "/bin/mkdir -p $CTEST_HOME"' >> $CTEST_INIT
-
-#echo "if [ -d /media/psf/vagrant ]; then" >> $CTEST_INIT
-#echo "find /media/psf/vagrant -maxdepth 1 -type f -exec cp {} /home/vagrant/ctest_scripts \;" >> $CTEST_INIT
-#echo "fi" >> $CTEST_INIT
-#echo "" >> $CTEST_INIT
+echo '/bin/mkdir -p $CTEST_HOME' >> $CTEST_INIT
 
 echo "count=0" >> $CTEST_INIT
-echo "while [ $count -lt 10 ]; do" >> $CTEST_INIT
+echo 'while [ $count -lt 10 ]; do' >> $CTEST_INIT
 echo " if [ -d /vagrant ]; then" >> $CTEST_INIT
 echo "   count=50" >> $CTEST_INIT
 echo " else" >> $CTEST_INIT
@@ -55,15 +57,13 @@ echo ' fi' >> $CTEST_INIT
 echo 'done' >> $CTEST_INIT
 
 echo "if [ -d /vagrant ]; then" >> $CTEST_INIT
-echo "find /vagrant -maxdepth 1 -type f -exec cp {} /home/vagrant/ctest_scripts \;" >> $CTEST_INIT
+echo "find -L /vagrant -maxdepth 1 -type f -exec cp {} /home/vagrant/ctest_scripts \;" >> $CTEST_INIT
 echo "else" >> $CTEST_INIT
 echo "exit 1" >> $CTEST_INIT
 echo "fi" >> $CTEST_INIT
 
+#echo "chown -R vagrant:vagrant /home/vagrant/ctest_scripts" >> $CTEST_INIT 
 
-echo "chown -R vagrant:vagrant /home/vagrant/ctest_scripts" >> $CTEST_INIT 
-echo 'case "$1" in' >> $CTEST_INIT
-echo ' start)' >> $CTEST_INIT
 echo ' if [ ! -f /usr/local/bin/ctest ]; then' >> $CTEST_INIT
 echo '    echo "ctest not found"' >> $CTEST_INIT
 echo '    exit 1' >> $CTEST_INIT
@@ -71,22 +71,12 @@ echo ' fi' >> $CTEST_INIT
 echo '      /bin/rm -rf $DASH' >> $CTEST_INIT
 echo '	    echo $"Starting ctest"' >> $CTEST_INIT
 echo '      cd /home/vagrant/ctest_scripts/' >> $CTEST_INIT
-echo '      /bin/su vagrant -c "/usr/local/bin/ctest -V -S CI.cmake > continuous_test.out 2>&1 &"' >> $CTEST_INIT
-echo '	;;' >> $CTEST_INIT
-echo ' stop)' >> $CTEST_INIT
-echo '	    echo $"Stopping ctest"' >> $CTEST_INIT
-echo '      /bin/su vagrant -c "/usr/bin/killall ctest"' >> $CTEST_INIT
-echo '      /bin/su vagrant -c "/bin/ps aux | grep ctest"' >> $CTEST_INIT 
-echo ' 	;;' >> $CTEST_INIT
-echo ' *)' >> $CTEST_INIT
-echo ' 	echo $"Usage: $0 {start|stop}"' >> $CTEST_INIT
-echo '	exit 1' >> $CTEST_INIT
-echo '	;;' >> $CTEST_INIT
-echo 'esac' >> $CTEST_INIT
+echo '      /usr/local/bin/ctest -V -S CI.cmake > continuous_test.out 2>&1 &' >> $CTEST_INIT
+
 
 echo 'exit $RETVAL' >> $CTEST_INIT
 chmod 755 $CTEST_INIT
-update-rc.d ctest defaults 99
+#update-rc.d ctest defaults 99
 
 
 ####
@@ -94,6 +84,11 @@ update-rc.d ctest defaults 99
 # Note: We can't start it yet, ctest and hdf libraries
 # haven't been installed yet.
 ####
+
+### Install a crontab for running nightly tests.
+sudo -i -u vagrant echo "@reboot $CTEST_INIT start > continuous_test.log &" > /home/vagrant/crontab.in
+sudo -i -u vagrant crontab < /home/vagrant/crontab.in
+rm /home/vagrant/crontab.in
 
 
 ## Install several packages from source.
@@ -141,13 +136,17 @@ popd
 rm -rf $HDF5_VER
 fi
 
+chown -R vagrant:vagrant /home/vagrant
+
+$CTEST_INIT start
+
 ####
 # Start ctest system service.
 ####
-/etc/init.d/ctest start
+#/etc/init.d/ctest start
 
-if [ -f /sbin/chkconfig ]; then
-sleep 2
+#if [ -f /sbin/chkconfig ]; then
+#sleep 2
 # For centos systems:
-echo '/etc/init.d/ctest start' >> /etc/rc.local
-fi
+#echo '/etc/init.d/ctest start' >> /etc/rc.local
+#fi
