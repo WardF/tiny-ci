@@ -86,7 +86,7 @@ chmod 755 $CTEST_INIT
 ####
 
 ### Install a crontab for running nightly tests.
-sudo -i -u vagrant echo "@reboot $CTEST_INIT start > continuous_test.log &" > /home/vagrant/crontab.in
+sudo -i -u vagrant echo "@reboot $CTEST_INIT" > /home/vagrant/crontab.in
 sudo -i -u vagrant crontab < /home/vagrant/crontab.in
 rm /home/vagrant/crontab.in
 
@@ -102,51 +102,41 @@ HDF5_VER="hdf5-1.8.12"
 
 # Install cmake from source
 if [ ! -f /usr/local/bin/cmake ]; then
-CMAKE_FILE="$CMAKE_VER".tar.gz
-wget http://www.cmake.org/files/v2.8/$CMAKE_FILE
-tar -zxf $CMAKE_FILE
-pushd $CMAKE_VER
-./configure --prefix=/usr/local
-make install
-popd
-rm -rf $CMAKE_VER
+    CMAKE_FILE="$CMAKE_VER".tar.gz
+    wget http://www.cmake.org/files/v2.8/$CMAKE_FILE
+    tar -zxf $CMAKE_FILE
+    pushd $CMAKE_VER
+    ./configure --prefix=/usr/local
+    make install
+    popd
+    rm -rf $CMAKE_VER
 fi
 
 # Install hdf4 from source.
 if [ ! -f /usr/local/lib/libhdf4.settings ]; then
-HDF4_FILE="$HDF4_VER".tar.bz2
-wget http://www.hdfgroup.org/ftp/HDF/HDF_Current/src/$HDF4_FILE
-tar -jxf $HDF4_FILE
-pushd $HDF4_VER
-./configure --disable-static --enable-shared --disable-netcdf --disable-fortran --prefix=/usr/local
-sudo make install
-popd
-rm -rf $HDF4_VER
+    HDF4_FILE="$HDF4_VER".tar.bz2
+    wget http://www.hdfgroup.org/ftp/HDF/HDF_Current/src/$HDF4_FILE
+    tar -jxf $HDF4_FILE
+    pushd $HDF4_VER
+    ./configure --disable-static --enable-shared --disable-netcdf --disable-fortran --prefix=/usr/local
+    sudo make install
+    popd
+    rm -rf $HDF4_VER
 fi
 
 # Install hdf5 from source
 if [ ! -f /usr/local/lib/libhdf5.settings ]; then
-HDF5_FILE="$HDF5_VER".tar.bz2
-wget http://www.hdfgroup.org/ftp/HDF5/current/src/$HDF5_FILE
-tar -jxf $HDF5_FILE
-pushd $HDF5_VER
-./configure --disable-static --enable-shared --disable-fortran --enable-hl --disable-fortran --prefix=/usr/local
-make install
-popd
-rm -rf $HDF5_VER
+    HDF5_FILE="$HDF5_VER".tar.bz2
+    wget http://www.hdfgroup.org/ftp/HDF5/current/src/$HDF5_FILE
+    tar -jxf $HDF5_FILE
+    pushd $HDF5_VER
+    ./configure --disable-static --enable-shared --disable-fortran --enable-hl --disable-fortran --prefix=/usr/local
+    make install
+    popd
+    rm -rf $HDF5_VER
 fi
 
 chown -R vagrant:vagrant /home/vagrant
 
-$CTEST_INIT start
+$CTEST_INIT
 
-####
-# Start ctest system service.
-####
-#/etc/init.d/ctest start
-
-#if [ -f /sbin/chkconfig ]; then
-#sleep 2
-# For centos systems:
-#echo '/etc/init.d/ctest start' >> /etc/rc.local
-#fi
