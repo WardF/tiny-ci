@@ -66,7 +66,7 @@ chmod -R 777 /var/www/CDash
 
 # Clone a base netcdf-c directory to work from and to monitor for changes.
 
-if [ ! -f /vagrant/netcdf-c ]; then
+if [ ! -d /vagrant/netcdf-c ]; then
     VFILE="/vagrant/NETCDF_MISSING_RUNME.sh"
     echo '#!/bin/bash' > $VFILE
     echo 'git clone https://github.com/Unidata/netcdf-c' >> $VFILE
