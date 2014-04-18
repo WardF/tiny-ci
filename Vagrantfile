@@ -30,7 +30,17 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   ######
   # Ubuntu Boxes
-  ######
+  ##### 
+ config.vm.define "t64" do |v|
+    v.vm.provision :shell, :path => "bootstrap_ci.sh"
+    v.vm.box = "WardF/trusty64"
+  end
+
+  config.vm.define "t32" do |v|
+    v.vm.provision :shell, :path => "bootstrap_ci.sh"
+    v.vm.box = "WardF/trusty32"
+  end
+
   config.vm.define "s64" do |v|
     v.vm.provision :shell, :path => "bootstrap_ci.sh"
     v.vm.box = "WardF/saucy64"
