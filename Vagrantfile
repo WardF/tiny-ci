@@ -9,9 +9,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # options are documented and commented below. For a complete reference,
   # please see the online documentation at vagrantup.com.
 
-  # Every Vagrant virtual environment requires a box to build off of.
+  # Turn on ssh x11 forwarding to true
+  config.ssh.forward_x11 = "true"
 
-    # Every Vagrant virtual environment requires a box to build off of.
+  # Every Vagrant virtual environment requires a box to build off of.
   config.vm.provider "virtualbox" do |v|
     v.memory = 512
     v.cpus = 1
@@ -24,7 +25,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define "dash", primary: true do |v|
     v.vm.provision :shell, :path => "bootstrap_dashboard.sh"
-    v.vm.network "private_network", ip: "192.168.33.10"
+    v.vm.network "private_network", ip: "192.168.55.10"
     v.vm.box = "WardF/saucy64"
   end
 
