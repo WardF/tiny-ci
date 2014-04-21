@@ -5,23 +5,35 @@
 apt-get update
 
 export DEBIAN_FRONTEND=noninteractive
+
+apt-get -y upgrade
+
 apt-get -y -q install wget apache2 mysql-server php5 php5-mysql php5-xsl php5-curl php5-gd unzip subversion links git htop midori
+
+
 
 ##### 
 # Install CDash, configure mysql
 #####
 
-cd /var/www/
+HTMLDIR="/var/www"
 
-echo '<?php' > /var/www/info.php
-echo 'phpinfo();' >> /var/www/info.php
-echo '?>' >> /var/www/info.php
+# Some linux distros use /var/www/html
+if [ -d "/var/www/html" ]; then
+    HTMLDIR="/var/www/html"
+fi
+
+cd $HTMLDIR
+
+echo '<?php' > $HTMLDIR/info.php
+echo 'phpinfo();' >> $HTMLDIR/info.php
+echo '?>' >> $HTMLDIR/info.php
 
 
 ###
 # Check out and configure CDash, if need be.
 ###
-if [ ! -f /var/www/CDash ]; then
+if [ ! -f $HTMLDIR/CDash ]; then
     # Stop mysql for the time being.
     # stop mysql
 
@@ -62,7 +74,7 @@ if [ ! -f /var/www/CDash ]; then
     apache2ctl restart
 fi
 
-chmod -R 777 /var/www/CDash
+chmod -R 777 $HTMLDIR/CDash
 
 # Clone a base netcdf-c directory to work from and to monitor for changes.
 

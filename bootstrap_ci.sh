@@ -20,8 +20,12 @@ GRP_LIST="yum -y groupinstall 'Development tools'"
 fi
 
 $PKG_UPDATE
+$PKG_CMD -y upgrade
 $PKG_CMD -y install $PKG_LIST
 $GRP_LIST
+
+
+
 #####
 # Enable Cron to run automatically.
 #####
