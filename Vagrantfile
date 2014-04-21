@@ -74,6 +74,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     v.vm.provision :shell, :path => "bootstrap_ci.sh"
     v.vm.box = "WardF/centos64"
   end
+
+  config.vm.define "cent32" do |v|
+    v.vm.provision :shell, :path => "bootstrap_ci.sh"
+    v.vm.box = "WardF/centos32"
+  end
   
   ######
   # End CentOS Boxes
