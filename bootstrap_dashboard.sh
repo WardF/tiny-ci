@@ -1,16 +1,20 @@
 #!/bin/bash
 #
 # Bootstrap a CDash installation.  The mysql data will live in /vagrant/mysql.
-# 
+# Assume we are using a Ubuntu machine for the dashboard. 
+#
 apt-get update
 
 export DEBIAN_FRONTEND=noninteractive
 
 apt-get -y upgrade
-
 apt-get -y -q install wget apache2 mysql-server php5 php5-mysql php5-xsl php5-curl php5-gd unzip subversion links git htop midori
 
-
+#####
+# Set the proper timezone.
+#####
+echo "US/Mountain" | tee /etc/timezone
+dpkg-reconfigure --frontend noninteractive tzdata
 
 ##### 
 # Install CDash, configure mysql

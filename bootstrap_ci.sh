@@ -1,4 +1,5 @@
-.#!/usr/bin/env bash
+#!/usr/bin/env bash
+
 # Local copy of bootstrap script, for testing purposes.
 # Determine if we're using apt-get or yum
 PKG_CMD=""
@@ -20,11 +21,15 @@ GRP_LIST="yum -y groupinstall 'Development tools'"
 fi
 
 $PKG_UPDATE
-
+$PKG_CMD -y upgrade
 $PKG_CMD -y install $PKG_LIST
 $GRP_LIST
 
-
+#####
+# Set the proper timezone.
+#####
+echo "US/Mountain" | tee /etc/timezone
+dpkg-reconfigure --frontend noninteractive tzdata
 
 #####
 # Enable Cron to run automatically.
