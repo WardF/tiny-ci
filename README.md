@@ -26,7 +26,7 @@ By default, the dashboard VM is on a local private network and is not exposed to
 
 > $ vagrant up dash
 
-This will create a dashboard which may be accessed at http://192.168.33.10/CDash.
+This will create a dashboard which may be accessed at http://192.168.55.10/CDash.
 
 2. Create Continuous-Integration instances:
 
