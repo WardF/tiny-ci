@@ -36,7 +36,7 @@ The goal of this project is to allow for a local Continuous Integration platform
 
 > $ vagrant up dash
 
-This will create a dashboard which may be accessed at http://192.168.55.10/CDash.
+This will create a dashboard which may be accessed at http://10.1.2.10/CDash.
 
 2. Create Continuous-Integration instances:
 
@@ -49,10 +49,6 @@ For a full list of CI instance names, run vagrant from the command line, e.g.:
 The dashboard instance is required to be built and running in order for any of the other instances to work. 
 
 
-
-
-
-
 ## Development
 
 Once the dashboard and at least one CI instance is provisioned and running, you may begin working.  As stated above, the CI instance(s) will monitor the `netcdf-c` directory for changes and, when found, will run the CI tests.  The repository is polled for changes every `60` seconds, allow for fairy rapid responses.
@@ -63,4 +59,4 @@ If you want to change branches in `netcdf-c` on the host machine, you will need 
 
 > $ vagrant up
 
-Note that every time you restart the CI instance, it will repeate the *initial* CI analysis, which may lead to multiple listings in the Dashboard.  
+Note that every time you restart the CI instance, it will repeat the *initial* CI analysis, which may lead to multiple listings in the Dashboard.  
