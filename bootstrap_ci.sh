@@ -108,7 +108,7 @@ rm /home/vagrant/crontab.in
 
 CMAKE_VER="cmake-2.8.12.2"
 HDF4_VER="hdf-4.2.10"
-HDF5_VER="hdf5-1.8.12"
+HDF5_VER="hdf5-1.8.13"
 
 # Install cmake from source
 if [ ! -f /usr/local/bin/cmake ]; then
