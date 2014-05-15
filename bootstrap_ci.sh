@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-# Local copy of bootstrap script, for testing purposes.
 # Determine if we're using apt-get or yum
 PKG_CMD=""
 USE_APT=""
@@ -28,8 +27,14 @@ $GRP_LIST
 #####
 # Set the proper timezone.
 #####
-echo "US/Mountain" | tee /etc/timezone
-dpkg-reconfigure --frontend noninteractive tzdata
+
+if [ -f "/usr/sbin/dpkg-reconfigure" ]; then
+    echo "US/Mountain" | tee /etc/timezone
+    dpkg-reconfigure --frontend noninteractive tzdata
+elif [ -f /usr/share/zoneinfo/America/Denver ]; then
+    mv /etc/localtime /etc/localtime.bak
+    ln -s /usr/share/zoneinfo/America/Denver /etc/localtime
+fi
 
 #####
 # Enable Cron to run automatically.
