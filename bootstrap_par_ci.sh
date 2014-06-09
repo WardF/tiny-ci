@@ -9,7 +9,7 @@ if [ `which apt-get | wc -w` -gt 0 ]; then
     USE_APT="TRUE"
     PKG_CMD=`which apt-get`
     PKG_UPDATE="$PKG_CMD update"
-    PKG_LIST="ubuntu-dev-tools m4 git libjpeg-dev libcurl4-openssl-dev wget htop libtool bison flex autoconf curl g++ midori libopenmpi-dev"
+    PKG_LIST="ubuntu-dev-tools m4 git libjpeg-dev libcurl4-openssl-dev wget htop libtool bison flex autoconf curl g++ midori libopenmpi-dev openmpi-bin emacs24"
     GRP_LIST=""
 elif [ `which yum | wc -w` -gt 0 ]; then
     USE_YUM="TRUE"
@@ -94,7 +94,7 @@ echo ' fi' >> $CTEST_INIT
 echo '      /bin/rm -rf $DASH' >> $CTEST_INIT
 echo '	    echo "Starting ctest"' >> $CTEST_INIT
 echo '      cd /home/vagrant/ctest_scripts/' >> $CTEST_INIT
-echo '      /usr/local/bin/ctest -V -S CI.cmake > continuous_test.out 2>&1 &' >> $CTEST_INIT
+echo '      /usr/local/bin/ctest -V -S PARCI.cmake > continuous_test.out 2>&1 &' >> $CTEST_INIT
 
 
 echo 'exit $RETVAL' >> $CTEST_INIT
@@ -173,7 +173,7 @@ if [ ! -f /usr/local/lib/libhdf5.settings ]; then
     
     tar -jxf $HDF5_FILE
     pushd $HDF5_VER
-    ./configure --disable-static --enable-shared --disable-fortran --enable-hl --disable-fortran --prefix=/usr/local
+    CC=`which mpicc` ./configure --enable-shared --disable-static --disable-fortran --enable-hl --disable-fortran --enable-parallel --prefix=/usr/local
     make install
     popd
     rm -rf $HDF5_VER
