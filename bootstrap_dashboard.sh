@@ -7,7 +7,7 @@ apt-get update
 
 export DEBIAN_FRONTEND=noninteractive
 
-apt-get -y upgrade
+#apt-get -y upgrade
 apt-get -y -q install wget apache2 mysql-server php5 php5-mysql php5-xsl php5-curl php5-gd unzip subversion links git htop midori
 
 #####
@@ -41,7 +41,7 @@ if [ ! -f $HTMLDIR/CDash ]; then
     # Stop mysql for the time being.
     # stop mysql
 
-    svn co --non-interactive --trust-server-cert https://www.kitware.com/svn/CDash/Release-2-0-2 CDash
+    svn co --non-interactive --trust-server-cert https://www.kitware.com/svn/CDash/Release-2-2-0 CDash
     # Start mysql back up.
     # start mysql
 
@@ -61,7 +61,7 @@ if [ ! -f $HTMLDIR/CDash ]; then
 	gunzip < /vagrant/default_cdash_database.sql.gz | mysql -u root cdash 
     else
 	# Create a script for easy export of database, once it's been configured.
-	echo "You must create a default database for use with CDash."
+	echo "You must configure a default database for use with CDash."
 	echo "Once created, run the script in /home/vagrant to"
 	echo "export it."
 	echo ""
