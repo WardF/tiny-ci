@@ -28,15 +28,15 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     v.vm.network "private_network", ip: "10.1.2.10"
     v.vm.box = "WardF/trusty64"
   end
-
+  
   ######
   # Ubuntu Boxes
-  ##### 
- config.vm.define "t64" do |v|
+  ######
+  config.vm.define "t64" do |v|
     v.vm.provision :shell, :path => "bootstrap_ci.sh"
     v.vm.box = "WardF/trusty64"
   end
-
+  
   config.vm.define "t32" do |v|
     v.vm.provision :shell, :path => "bootstrap_ci.sh"
     v.vm.box = "WardF/trusty32"
@@ -84,8 +84,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # End CentOS Boxes
   ######
 
-
-
+  ######
+  # Ubuntu Boxes for Parallel Tests
+  ######
+  config.vm.define "t64_par" do |v|
+    v.vm.provision :shell, :path => "bootstrap_par_ci.sh"
+    v.vm.box = "WardF/trusty64"
+  end
 
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
