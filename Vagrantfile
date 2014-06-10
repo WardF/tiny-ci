@@ -92,6 +92,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     v.vm.box = "WardF/trusty64"
   end
 
+  config.vm.define "t32_par" do |v|
+    v.vm.provision :shell, :path => "bootstrap_par_ci.sh"
+    v.vm.box = "WardF/trusty32"
+  end
+
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
   # config.vm.box_url = "http://domain.com/path/to/above.box"
