@@ -184,7 +184,7 @@ fi
 #####
 
 sudo -i -u vagrant git config --global user.name "Ward Fisher"
-sudo -i -u vagrant git config --global user.email "ward.fisher@gmail.com"
+sudo -i -u vagrant git config --global user.email "wfisher@unidata.ucar.edu"
 sudo -i -u vagrant git config --global push.default simple
 
 #####

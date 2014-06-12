@@ -179,7 +179,24 @@ if [ ! -f /usr/local/lib/libhdf5.settings ]; then
     rm -rf $HDF5_VER
 fi
 
-chown -R vagrant:vagrant /home/vagrant
+#####
+# Set up git
+#####
 
+sudo -i -u vagrant git config --global user.name "Ward Fisher"
+sudo -i -u vagrant git config --global user.email "wfisher@unidata.ucar.edu"
+sudo -i -u vagrant git config --global push.default simple
+
+#####
+# Set up .emacs file
+#####
+echo "(set-face-attribute 'default nil :height 130)" >> /home/vagrant/.emacs
+echo '(custom-set-variables' >> /home/vagrant/.emacs
+echo " '(inhibit-startup-screen t)" >> /home/vagrant/.emacs
+echo " '(show-paren-mode t)" >> /home/vagrant/.emacs
+echo " '(uniquify-buffer-name-style (quote forward) nil (uniquify)))" >> /home/vagrant/.emacs 
+
+
+chown -R vagrant:vagrant /home/vagrant
 sudo -i -u vagrant $CTEST_INIT
 

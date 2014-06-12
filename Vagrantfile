@@ -71,6 +71,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   ######
 
   config.vm.define "cent64" do |v|
+    
     v.vm.provision :shell, :path => "bootstrap_ci.sh"
     v.vm.box = "WardF/centos64"
   end
@@ -90,11 +91,29 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.define "t64_par" do |v|
     v.vm.provision :shell, :path => "bootstrap_par_ci.sh"
     v.vm.box = "WardF/trusty64"
+    v.vm.hostname = "t64par"
+    
+    v.vm.provider "virtualbox" do |vb|
+      vb.customize [
+                    "modifyvm", :id,
+                    "--memory", "1024",
+                    "--cpus", "2"
+                   ]
+    end 
   end
 
   config.vm.define "t32_par" do |v|
     v.vm.provision :shell, :path => "bootstrap_par_ci.sh"
     v.vm.box = "WardF/trusty32"
+    v.vm.hostname = "t32par"
+    
+    v.vm.provider "virtualbox" do |vb|
+      vb.customize [
+                    "modifyvm", :id,
+                    "--memory", "1024",
+                    "--cpus", "2"
+                   ]
+    end
   end
 
   # The url from where the 'config.vm.box' box will be fetched if it
