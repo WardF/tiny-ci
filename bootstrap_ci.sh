@@ -9,7 +9,7 @@ if [ `which apt-get | wc -w` -gt 0 ]; then
     USE_APT="TRUE"
     PKG_CMD=`which apt-get`
     PKG_UPDATE="$PKG_CMD update"
-    PKG_LIST="ubuntu-dev-tools m4 git libjpeg-dev libcurl4-openssl-dev wget htop libtool bison flex autoconf curl g++ midori"
+    PKG_LIST="ubuntu-dev-tools m4 git libjpeg-dev libcurl4-openssl-dev wget htop libtool bison flex autoconf curl g++ midori gfortran"
     GRP_LIST=""
 elif [ `which yum | wc -w` -gt 0 ]; then
     USE_YUM="TRUE"
@@ -87,20 +87,18 @@ echo "fi" >> $CTEST_INIT
 
 #echo "chown -R vagrant:vagrant /home/vagrant/ctest_scripts" >> $CTEST_INIT 
 
-echo ' if [ ! -f /usr/local/bin/ctest ]; then' >> $CTEST_INIT
-echo '    echo "ctest not found"' >> $CTEST_INIT
-echo '    exit 1' >> $CTEST_INIT
-echo ' fi' >> $CTEST_INIT
-echo '      /bin/rm -rf $DASH' >> $CTEST_INIT
-echo '	    echo "Starting ctest"' >> $CTEST_INIT
-echo '      cd /home/vagrant/ctest_scripts/' >> $CTEST_INIT
-echo '      /usr/local/bin/ctest -V -S CI.cmake > continuous_test.out 2>&1 &' >> $CTEST_INIT
+echo 'if [ ! -f /usr/local/bin/ctest ]; then' >> $CTEST_INIT
+echo '   echo "ctest not found"' >> $CTEST_INIT
+echo '   exit 1' >> $CTEST_INIT
+echo 'fi' >> $CTEST_INIT
+echo '/bin/rm -rf $DASH' >> $CTEST_INIT
+echo 'echo "Starting ctest"' >> $CTEST_INIT
+echo 'cd /home/vagrant/ctest_scripts/' >> $CTEST_INIT
+echo '/usr/local/bin/ctest -V -S CI.cmake > continuous_test.out 2>&1 &' >> $CTEST_INIT
 
 
 echo 'exit $RETVAL' >> $CTEST_INIT
 chmod 755 $CTEST_INIT
-#update-rc.d ctest defaults 99
-
 
 ####
 # End installation of ctest as a script.
