@@ -1,3 +1,4 @@
+netcdf-c-build
 cov-analysis-linux64-7.0.2.tar.gz
 cov-scan-build.sh
 deploy_coverity.sh
