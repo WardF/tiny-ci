@@ -1,8 +1,8 @@
 #####
-# NetCDF-C Continuous Integration
+# NetCDF-Fortran Continuous Integration
 # Some Test/System Setup
 #####
-set (CTEST_PROJECT_NAME "netcdf-c")
+set (CTEST_PROJECT_NAME "netcdf-fortran")
 
 #set(DART_TESTING_TIMEOUT "4800")
 
@@ -59,7 +59,7 @@ set (CTEST_START_WITH_EMPTY_BINARY_DIRECTORY TRUE)
 
 
 ## Set CTest Options
-set(OPTIONS -DENABLE_EXTRA_TESTS=ON -DENABLE_HDF4=ON -DNC_CTEST_DROP_LOC_PREFIX=/CDash -DNC_CTEST_DROP_SITE=${CTEST_DROP_SITE})
+set(OPTIONS -DCMAKE_PREFIX_PATH=/home/vagrant/local2 -DNC_CTEST_DROP_LOC_PREFIX=/CDash -DNC_CTEST_DROP_SITE=${CTEST_DROP_SITE})
 
 ## Kick off the test
 SET (CTEST_START_WITH_EMPTY_BINARY_DIRECTORY_ONCE 1)
@@ -71,7 +71,7 @@ while (${CTEST_ELAPSED_TIME} GREATER -1)
   set (START_TIME ${CTEST_ELAPSED_TIME})
   ctest_update(RETURN_VALUE count)
   message("Count: ${count}")
-  IF(NOT EXISTS "/vagrant/NOTEST" AND NOT EXISTS "/vagrant/NOTESTC")
+  IF(NOT EXISTS "/vagrant/NOTEST" AND NOT EXISTS "/vagrant/NOTESTF")
     if (count GREATER 0 OR first_loop GREATER 0)
       SET(CTEST_BUILD_NAME	"${CTEST_BUILD_NAME}")
       
@@ -88,8 +88,8 @@ while (${CTEST_ELAPSED_TIME} GREATER -1)
       set(first_loop 0)
     endif()
   ELSE()
-    message("-- Lock file /vagrant/NOTEST exists. Skipping tests.")
-  ENDIF(NOT EXISTS "/vagrant/NOTEST")
+    message("-- Lock file /vagrant/NOTEST or NOTESTF exists. Skipping tests.")
+  ENDIF()
   ctest_sleep( ${START_TIME} 60 ${CTEST_ELAPSED_TIME})
 
 endwhile()

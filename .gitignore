@@ -10,5 +10,6 @@ NETCDF_MISSING_RUNME.sh
 .vagrant
 mysql
 cmake-2.8.12.2.tar.gz
+cmake-3.0.0.tar.gz
 hdf-4.2.10.tar.bz2
 hdf5-1.8.13.tar.bz2

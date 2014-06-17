@@ -9,7 +9,7 @@ if [ `which apt-get | wc -w` -gt 0 ]; then
     USE_APT="TRUE"
     PKG_CMD=`which apt-get`
     PKG_UPDATE="$PKG_CMD update"
-    PKG_LIST="ubuntu-dev-tools m4 git libjpeg-dev libcurl4-openssl-dev wget htop libtool bison flex autoconf curl g++ midori gfortran"
+    PKG_LIST="ubuntu-dev-tools m4 git libjpeg-dev libcurl4-openssl-dev wget htop libtool bison flex autoconf curl g++ midori gfortran cmake-data"
     GRP_LIST=""
 elif [ `which yum | wc -w` -gt 0 ]; then
     USE_YUM="TRUE"
@@ -85,8 +85,6 @@ echo "else" >> $CTEST_INIT
 echo "     exit 1" >> $CTEST_INIT
 echo "fi" >> $CTEST_INIT
 
-#echo "chown -R vagrant:vagrant /home/vagrant/ctest_scripts" >> $CTEST_INIT 
-
 echo 'if [ ! -f /usr/local/bin/ctest ]; then' >> $CTEST_INIT
 echo '   echo "ctest not found"' >> $CTEST_INIT
 echo '   exit 1' >> $CTEST_INIT
@@ -94,8 +92,8 @@ echo 'fi' >> $CTEST_INIT
 echo '/bin/rm -rf $DASH' >> $CTEST_INIT
 echo 'echo "Starting ctest"' >> $CTEST_INIT
 echo 'cd /home/vagrant/ctest_scripts/' >> $CTEST_INIT
-echo '/usr/local/bin/ctest -V -S CI.cmake > continuous_test.out 2>&1 &' >> $CTEST_INIT
-
+echo '/usr/local/bin/ctest -V -S CI.cmake > ccontinuous_test.out 2>&1 &' >> $CTEST_INIT
+echo '/usr/local/bin/ctest -V -S FCI.cmake > fcontinuous_test.out 2>&1 &' >> $CTEST_INIT
 
 echo 'exit $RETVAL' >> $CTEST_INIT
 chmod 755 $CTEST_INIT
@@ -119,7 +117,7 @@ rm /home/vagrant/crontab.in
 # * hdf4
 # * hdf5
 
-CMAKE_VER="cmake-2.8.12.2"
+CMAKE_VER="cmake-3.0.0"
 HDF4_VER="hdf-4.2.10"
 HDF5_VER="hdf5-1.8.13"
 
@@ -127,7 +125,7 @@ HDF5_VER="hdf5-1.8.13"
 if [ ! -f /usr/local/bin/cmake ]; then
     CMAKE_FILE="$CMAKE_VER".tar.gz
     if [ ! -f "/vagrant/$CMAKE_FILE" ]; then
-	wget http://www.cmake.org/files/v2.8/$CMAKE_FILE
+	wget http://www.cmake.org/files/v3.0/$CMAKE_FILE
 	cp "$CMAKE_FILE" /vagrant
     else
 	cp "/vagrant/$CMAKE_FILE" .
@@ -177,6 +175,24 @@ if [ ! -f /usr/local/lib/libhdf5.settings ]; then
     rm -rf $HDF5_VER
 fi
 
+##
+# In order to do netcdf-fortran testing, we need to
+# install netcdf-c in an out-of-the-way place.
+##
+if [ ! -f /home/vagrant/local2/lib/libnetcdf.settings ]; then
+    git clone http://github.com/Unidata/netcdf-c
+    pushd netcdf-c
+    mkdir build
+    cd build
+    cmake .. -DCMAKE_INSTALL_PREFIX=/home/vagrant/local2 -DENABLE_TESTS=OFF -DCMAKE_BUILD_TYPE="Release"
+    make
+    make install
+    popd
+    rm -rf netcdf-c/
+fi
+
+
+
 #####
 # Set up git
 #####
@@ -193,6 +209,16 @@ echo '(custom-set-variables' >> /home/vagrant/.emacs
 echo " '(inhibit-startup-screen t)" >> /home/vagrant/.emacs
 echo " '(show-paren-mode t)" >> /home/vagrant/.emacs
 echo " '(uniquify-buffer-name-style (quote forward) nil (uniquify)))" >> /home/vagrant/.emacs 
+echo "" >> /home/vagrant/.emacs 
+
+echo "; Add cmake listfile names to the mode list." >> /home/vagrant/.emacs 
+echo "(setq auto-mode-alist" >> /home/vagrant/.emacs 
+echo "	(append" >> /home/vagrant/.emacs 
+echo "	'((\"CMakeLists\\.txt\\'\" . cmake-mode))" >> /home/vagrant/.emacs 
+echo "	'((\"\\.cmake\\'\" . cmake-mode))" >> /home/vagrant/.emacs 
+echo "	auto-mode-alist))" >> /home/vagrant/.emacs 
+echo "" >> /home/vagrant/.emacs 
+echo "(autoload 'cmake-mode \"~/CMake/Auxiliary/cmake-mode.el\" t)" >> /home/vagrant/.emacs 
 
 
 chown -R vagrant:vagrant /home/vagrant
