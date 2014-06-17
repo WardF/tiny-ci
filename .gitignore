@@ -6,6 +6,8 @@ cov-scan-build.sh
 deploy_coverity.sh
 Dashboards
 NOTEST
+NOTESTC
+NOTESTF
 NETCDF_MISSING_RUNME.sh
 .vagrant
 mysql
