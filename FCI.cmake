@@ -9,7 +9,7 @@ set (CTEST_PROJECT_NAME "netcdf-fortran")
 #set(CTEST_NIGHTLY_START_TIME "00:00:00 EST")
 
 set(CTEST_DROP_METHOD "http")
-set(CTEST_DROP_SITE "10.1.2.10") 
+set(CTEST_DROP_SITE "10.1.2.10")
 set(CTEST_DROP_LOCATION "/CDash/submit.php?project=${CTEST_PROJECT_NAME}")
 set(CTEST_DROP_SITE_CDASH TRUE)
 
@@ -74,7 +74,7 @@ while (${CTEST_ELAPSED_TIME} GREATER -1)
   IF(NOT EXISTS "/vagrant/NOTEST" AND NOT EXISTS "/vagrant/NOTESTF")
     if (count GREATER 0 OR first_loop GREATER 0)
       SET(CTEST_BUILD_NAME	"${CTEST_BUILD_NAME}")
-      
+
       message("Count ${count} > 0, running analysis.")
       ctest_configure(OPTIONS "${OPTIONS}")
       message("Configuring")
@@ -88,7 +88,7 @@ while (${CTEST_ELAPSED_TIME} GREATER -1)
       set(first_loop 0)
     endif()
   ELSE()
-    message("-- Lock file /vagrant/NOTEST or NOTESTF exists. Skipping tests.")
+    message("-- Lock file /vagrant/NOTEST or /vagrant/NOTESTF exists. Skipping tests.")
   ENDIF()
   ctest_sleep( ${START_TIME} 60 ${CTEST_ELAPSED_TIME})
 
