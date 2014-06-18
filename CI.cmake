@@ -9,7 +9,7 @@ set (CTEST_PROJECT_NAME "netcdf-c")
 #set(CTEST_NIGHTLY_START_TIME "00:00:00 EST")
 
 set(CTEST_DROP_METHOD "http")
-set(CTEST_DROP_SITE "10.1.2.10") 
+set(CTEST_DROP_SITE "10.1.2.10")
 set(CTEST_DROP_LOCATION "/CDash/submit.php?project=${CTEST_PROJECT_NAME}")
 set(CTEST_DROP_SITE_CDASH TRUE)
 
@@ -57,7 +57,6 @@ set (CTEST_CHECKOUT_COMMAND "${CTEST_GIT_COMMAND} clone /vagrant/${CTEST_PROJECT
 set (CTEST_UPDATE_COMMAND "${CTEST_GIT_COMMAND}")
 set (CTEST_START_WITH_EMPTY_BINARY_DIRECTORY TRUE)
 
-
 ## Set CTest Options
 set(OPTIONS -DENABLE_EXTRA_TESTS=ON -DENABLE_HDF4=ON -DNC_CTEST_DROP_LOC_PREFIX=/CDash -DNC_CTEST_DROP_SITE=${CTEST_DROP_SITE})
 
@@ -74,7 +73,7 @@ while (${CTEST_ELAPSED_TIME} GREATER -1)
   IF(NOT EXISTS "/vagrant/NOTEST" AND NOT EXISTS "/vagrant/NOTESTC")
     if (count GREATER 0 OR first_loop GREATER 0)
       SET(CTEST_BUILD_NAME	"${CTEST_BUILD_NAME}")
-      
+
       message("Count ${count} > 0, running analysis.")
       ctest_configure(OPTIONS "${OPTIONS}")
       message("Configuring")
@@ -88,8 +87,8 @@ while (${CTEST_ELAPSED_TIME} GREATER -1)
       set(first_loop 0)
     endif()
   ELSE()
-    message("-- Lock file /vagrant/NOTEST exists. Skipping tests.")
-  ENDIF(NOT EXISTS "/vagrant/NOTEST")
+    message("-- Lock file /vagrant/NOTEST or /vagrant/NOTESTC exists. Skipping tests.")
+  ENDIF()
   ctest_sleep( ${START_TIME} 60 ${CTEST_ELAPSED_TIME})
 
 endwhile()
