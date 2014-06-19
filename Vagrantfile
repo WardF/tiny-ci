@@ -28,7 +28,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     v.vm.network "private_network", ip: "10.1.2.10"
     v.vm.box = "WardF/trusty64"
   end
-  
+
   ######
   # Ubuntu Boxes
   ######
@@ -36,7 +36,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     v.vm.provision :shell, :path => "bootstrap_ci.sh"
     v.vm.box = "WardF/trusty64"
   end
-  
+
   config.vm.define "t32" do |v|
     v.vm.provision :shell, :path => "bootstrap_ci.sh"
     v.vm.box = "WardF/trusty32"
@@ -65,13 +65,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   ######
   # End Ubuntu Boxes
   ######
-  
+
   ######
   # Start CentOS Boxes
   ######
 
   config.vm.define "cent64" do |v|
-    
+
     v.vm.provision :shell, :path => "bootstrap_ci.sh"
     v.vm.box = "WardF/centos64"
   end
@@ -80,33 +80,19 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     v.vm.provision :shell, :path => "bootstrap_ci.sh"
     v.vm.box = "WardF/centos32"
   end
-  
+
   ######
   # End CentOS Boxes
   ######
 
   ######
-  # Ubuntu Boxes for Parallel Tests
+  # Ubuntu Boxes for HDF5 Parallel Tests
   ######
   config.vm.define "t64_par" do |v|
     v.vm.provision :shell, :path => "bootstrap_par_ci.sh"
     v.vm.box = "WardF/trusty64"
     v.vm.hostname = "t64par"
-    
-    v.vm.provider "virtualbox" do |vb|
-      vb.customize [
-                    "modifyvm", :id,
-                    "--memory", "1024",
-                    "--cpus", "2"
-                   ]
-    end 
-  end
 
-  config.vm.define "t32_par" do |v|
-    v.vm.provision :shell, :path => "bootstrap_par_ci.sh"
-    v.vm.box = "WardF/trusty32"
-    v.vm.hostname = "t32par"
-    
     v.vm.provider "virtualbox" do |vb|
       vb.customize [
                     "modifyvm", :id,
@@ -115,6 +101,58 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
                    ]
     end
   end
+
+  config.vm.define "t32_par" do |v|
+    v.vm.provision :shell, :path => "bootstrap_par_ci.sh"
+    v.vm.box = "WardF/trusty32"
+    v.vm.hostname = "t32par"
+
+    v.vm.provider "virtualbox" do |vb|
+      vb.customize [
+                    "modifyvm", :id,
+                    "--memory", "1024",
+                    "--cpus", "2"
+                   ]
+    end
+  end
+
+  ######
+  # End Ubuntu Boxes for HDF5 Parallel Tests
+  #####
+
+  ######
+  # Ubuntu Boxes for pnetcdf Parallel Tests
+  ######
+  config.vm.define "t64_pnet" do |v|
+    v.vm.provision :shell, :path => "bootstrap_pnet_ci.sh"
+    v.vm.box = "WardF/trusty64"
+    v.vm.hostname = "t64pnet"
+
+    v.vm.provider "virtualbox" do |vb|
+      vb.customize [
+                    "modifyvm", :id,
+                    "--memory", "1024",
+                    "--cpus", "2"
+                   ]
+    end
+  end
+
+  config.vm.define "t32_pnet" do |v|
+    v.vm.provision :shell, :path => "bootstrap_pnet_ci.sh"
+    v.vm.box = "WardF/trusty32"
+    v.vm.hostname = "t32pnet"
+
+    v.vm.provider "virtualbox" do |vb|
+      vb.customize [
+                    "modifyvm", :id,
+                    "--memory", "1024",
+                    "--cpus", "2"
+                   ]
+    end
+  end
+  ######
+  # End Ubuntu Boxes for pnetcdf Parallel Tests
+  ######
 
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
