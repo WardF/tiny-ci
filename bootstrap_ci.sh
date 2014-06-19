@@ -20,7 +20,7 @@ elif [ `which yum | wc -w` -gt 0 ]; then
 fi
 
 $PKG_UPDATE
-$PKG_CMD -y upgrade
+#$PKG_CMD -y upgrade
 $PKG_CMD -y install $PKG_LIST
 $GRP_LIST
 #####
@@ -54,7 +54,7 @@ elif [ `which chkconfig | wc -w` -gt 0 ]; then
     chkconfig crond on
 fi
 
-##### 
+#####
 # Install CTest as a script in the 'vagrant' home directory.
 #####
 CTEST_INIT="/home/vagrant/ctest_service.sh"
@@ -130,7 +130,7 @@ if [ ! -f /usr/local/bin/cmake ]; then
     else
 	cp "/vagrant/$CMAKE_FILE" .
     fi
-    
+
     tar -zxf $CMAKE_FILE
     pushd $CMAKE_VER
     ./configure --prefix=/usr/local
@@ -166,7 +166,7 @@ if [ ! -f /usr/local/lib/libhdf5.settings ]; then
     else
 	cp "/vagrant/$HDF5_FILE" .
     fi
-    
+
     tar -jxf $HDF5_FILE
     pushd $HDF5_VER
     ./configure --disable-static --enable-shared --disable-fortran --enable-hl --disable-fortran --prefix=/usr/local
@@ -208,19 +208,18 @@ echo "(set-face-attribute 'default nil :height 130)" >> /home/vagrant/.emacs
 echo '(custom-set-variables' >> /home/vagrant/.emacs
 echo " '(inhibit-startup-screen t)" >> /home/vagrant/.emacs
 echo " '(show-paren-mode t)" >> /home/vagrant/.emacs
-echo " '(uniquify-buffer-name-style (quote forward) nil (uniquify)))" >> /home/vagrant/.emacs 
-echo "" >> /home/vagrant/.emacs 
+echo " '(uniquify-buffer-name-style (quote forward) nil (uniquify)))" >> /home/vagrant/.emacs
+echo "" >> /home/vagrant/.emacs
 
-echo "; Add cmake listfile names to the mode list." >> /home/vagrant/.emacs 
-echo "(setq auto-mode-alist" >> /home/vagrant/.emacs 
-echo "	(append" >> /home/vagrant/.emacs 
-echo "	'((\"CMakeLists\\.txt\\'\" . cmake-mode))" >> /home/vagrant/.emacs 
-echo "	'((\"\\.cmake\\'\" . cmake-mode))" >> /home/vagrant/.emacs 
-echo "	auto-mode-alist))" >> /home/vagrant/.emacs 
-echo "" >> /home/vagrant/.emacs 
-echo "(autoload 'cmake-mode \"~/CMake/Auxiliary/cmake-mode.el\" t)" >> /home/vagrant/.emacs 
+echo "; Add cmake listfile names to the mode list." >> /home/vagrant/.emacs
+echo "(setq auto-mode-alist" >> /home/vagrant/.emacs
+echo "	(append" >> /home/vagrant/.emacs
+echo "	'((\"CMakeLists\\.txt\\'\" . cmake-mode))" >> /home/vagrant/.emacs
+echo "	'((\"\\.cmake\\'\" . cmake-mode))" >> /home/vagrant/.emacs
+echo "	auto-mode-alist))" >> /home/vagrant/.emacs
+echo "" >> /home/vagrant/.emacs
+echo "(autoload 'cmake-mode \"~/CMake/Auxiliary/cmake-mode.el\" t)" >> /home/vagrant/.emacs
 
 
 chown -R vagrant:vagrant /home/vagrant
 sudo -i -u vagrant $CTEST_INIT
-
