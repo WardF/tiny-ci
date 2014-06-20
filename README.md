@@ -1,34 +1,32 @@
 # Tiny-CI
 
-A Tiny, Self-Contained NetCDF-C Continuous Integration Instance and Dashboard
+A Tiny, Self-Contained NetCDF-C Continuous Integration/Development Instance and Dashboard
 
 # Overview
+
+The VM's defined in the accompanying `Vagrantfile` are used for testing netcdf in a local Continuous-Integration environment.  They also provide various platforms to test and develop on. The bulk of the platforms are Ubuntu-based distributions.
 
 ## Requirements
 
 * Vagrant
 * VM Software:
 	* VirtualBox
-	* Parallels
-
-## Default Credentials
-
-By default, the dashboard VM is on a local private network and is not exposed to the outside world.  As a result, there should not be a security issue. 
-
-* Username: `admin@localhost`
-* Password: `cdash`
-
-> Note that if you change the credentials (or, in fact, any settings of the project) you need to run the script `export_mysql.sh` on the `dash` VM to create a new default database file. This file lives in `/home/vagrant`.
 
 # Usage
 
-The goal of this project is to allow for a local Continuous Integration platform.  On most machines, you will want to run only one or two VM's at a time, unless your computer has a large amount of available resources.  By default, the *source* git repository is named `netcdf-c`, and is located inside the `tiny-ci` directory, e.g.:
+In order for these VM's to run their CI scripts, the `netcdf-c/` and `netcdf-fortran/` directories must exist in the `tiny-ci/` directory.
 
 * `tiny-ci/`
 	* `netcdf-c/`
+	* `netcdf-fortran/`
 	* `Vagrantfile`
 	* `README.md`
 	* ...
+
+Changes made to these local git repositories will be tested by the CI instances.
+
+    Note: If you change branches in the repository on the host machine, you *must* restart the VM in order for the CI script to begin watching this new branch.
+
 
 ## Instantiate VM's
 
@@ -37,6 +35,16 @@ The goal of this project is to allow for a local Continuous Integration platform
 > $ vagrant up dash
 
 This will create a dashboard which may be accessed at http://10.1.2.10/CDash.
+
+### Default Credentials
+
+By default, the dashboard VM is on a local private network and is not exposed to the outside world.  As a result, there should not be a security issue. 
+
+* Username: `admin@localhost`
+* Password: `cdash`
+
+> Note that if you change the credentials (or, in fact, any settings of the project) you need to run the script `export_mysql.sh` on the `dash` VM to create a new default database file. This file lives in `/home/vagrant`.
+
 
 2. Create Continuous-Integration instances:
 
@@ -59,4 +67,16 @@ If you want to change branches in `netcdf-c` on the host machine, you will need 
 
 > $ vagrant up
 
-Note that every time you restart the CI instance, it will repeat the *initial* CI analysis, which may lead to multiple listings in the Dashboard.  
+Note that every time you restart the CI instance, it will repeat the *initial* CI analysis, which may lead to multiple listings in the Dashboard. 
+
+### Suppressing Continuous Integration Testing
+
+In the event that you want to use a VM for development or on-the-spot tests, instead of Continuous Integration testing, you would create the following files in the root `tiny-ci/` directory (`/vagrant/` on the VM).
+
+* `NOTEST` - Prevents any CI tests from running.
+* `NOTESTC` - Prevents CI tests for `netcdf-c` from running.
+* `NOTESTF` - Prevents CI tests for `netcdf-fortran` from running.
+
+Note: 
+
+    These files may be created and deleted on-the-fly.  The CI script will run at boot, but it checks for the presence of these files before running any tests.  If they are present, no tests are run.

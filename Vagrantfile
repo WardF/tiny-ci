@@ -23,10 +23,21 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     v.cpus = 1
   end
 
+  #####
+  # Main CDash Dashboard.
+  #####
+
   config.vm.define "dash", primary: true do |v|
     v.vm.provision :shell, :path => "bootstrap_dashboard.sh"
     v.vm.network "private_network", ip: "10.1.2.10"
     v.vm.box = "WardF/trusty64"
+
+    v.vm.provider "virtualbox" do |vb|
+      vb.customize [
+                    "modifyvm", :id,
+                    "--memory", "256"
+                   ]
+    end
   end
 
   ######
@@ -132,7 +143,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       vb.customize [
                     "modifyvm", :id,
                     "--memory", "1024",
-                    "--cpus", "4"
+                    "--cpus", "2"
                    ]
     end
   end
