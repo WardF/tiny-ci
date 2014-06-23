@@ -9,7 +9,7 @@ if [ `which apt-get | wc -w` -gt 0 ]; then
     USE_APT="TRUE"
     PKG_CMD=`which apt-get`
     PKG_UPDATE="$PKG_CMD update"
-    PKG_LIST="ubuntu-dev-tools m4 git libjpeg-dev libcurl4-openssl-dev wget htop libtool bison flex autoconf curl g++ midori gfortran cmake-data emacs24"
+    PKG_LIST="ubuntu-dev-tools m4 git libjpeg-dev libcurl4-openssl-dev wget htop libtool bison flex autoconf curl g++ midori gfortran cmake-data emacs"
     GRP_LIST=""
 elif [ `which yum | wc -w` -gt 0 ]; then
     USE_YUM="TRUE"
@@ -199,7 +199,7 @@ fi
 
 sudo -i -u vagrant git config --global user.name "Ward Fisher"
 sudo -i -u vagrant git config --global user.email "wfisher@unidata.ucar.edu"
-sudo -i -u vagrant git config --global push.default simple
+#sudo -i -u vagrant git config --global push.default simple
 
 #####
 # Set up .emacs file

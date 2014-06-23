@@ -77,12 +77,29 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # End Ubuntu Boxes
   ######
 
+  #####
+  # Start Debian Boxes
+  #####
+
+  config.vm.define "debian64" do |v|
+    v.vm.provision :shell, :path => "bootstrap_ci.sh"
+    v.vm.box = "debian64"
+  end
+
+  config.vm.define "debian32" do |v|
+    v.vm.provision :shell, :path => "bootstrap_ci.sh"
+    v.vm.box = "debian32"
+  end
+
+  #####
+  # Start Debian Boxes
+  #####
+
   ######
   # Start CentOS Boxes
   ######
 
   config.vm.define "cent64" do |v|
-
     v.vm.provision :shell, :path => "bootstrap_ci.sh"
     v.vm.box = "WardF/centos64"
   end

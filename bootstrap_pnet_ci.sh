@@ -156,7 +156,7 @@ if [ ! -f /usr/local/lib/libhdf4.settings ]; then
 
     tar -jxf $HDF4_FILE
     pushd $HDF4_VER
-    ./configure --disable-static --enable-shared --disable-netcdf --disable-fortran --prefix=/usr/local
+    CC=`which mpicc` ./configure --disable-static --enable-shared --disable-netcdf --disable-fortran --prefix=/usr/local
     sudo make install
     popd
     rm -rf $HDF4_VER
@@ -193,7 +193,7 @@ if [ ! -f /usr/local/lib/libpnetcdf.a ]; then
     tar -jxf $PNET_FILE
     pushd $PNET_VER
     CC=`which mpicc` ./configure --disable-shared --enable-static --prefix=/usr/local
-    make install
+    make -k install
     popd
     rm -rf $PNET_VER
 fi
