@@ -199,7 +199,7 @@ fi
 
 sudo -i -u vagrant git config --global user.name "Ward Fisher"
 sudo -i -u vagrant git config --global user.email "wfisher@unidata.ucar.edu"
-#sudo -i -u vagrant git config --global push.default simple
+sudo -i -u vagrant git config --global push.default current
 
 #####
 # Set up .emacs file
