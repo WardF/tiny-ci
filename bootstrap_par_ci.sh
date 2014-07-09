@@ -9,7 +9,8 @@ if [ `which apt-get | wc -w` -gt 0 ]; then
     USE_APT="TRUE"
     PKG_CMD=`which apt-get`
     PKG_UPDATE="$PKG_CMD update"
-    PKG_LIST="ubuntu-dev-tools m4 git libjpeg-dev libcurl4-openssl-dev wget htop libtool bison flex autoconf curl g++ midori libopenmpi-dev openmpi-bin emacs24"
+    #PKG_LIST="ubuntu-dev-tools m4 git libjpeg-dev libcurl4-openssl-dev wget htop libtool bison flex autoconf curl g++ midori libopenmpi-dev openmpi-bin emacs24"
+    PKG_LIST="ubuntu-dev-tools m4 git libjpeg-dev libcurl4-openssl-dev wget htop libtool bison flex autoconf curl g++ midori mpich libmpich-dev emacs24"
     GRP_LIST=""
 elif [ `which yum | wc -w` -gt 0 ]; then
     USE_YUM="TRUE"
@@ -54,7 +55,7 @@ elif [ `which chkconfig | wc -w` -gt 0 ]; then
     chkconfig crond on
 fi
 
-##### 
+#####
 # Install CTest as a script in the 'vagrant' home directory.
 #####
 CTEST_INIT="/home/vagrant/ctest_service.sh"
@@ -85,7 +86,7 @@ echo "else" >> $CTEST_INIT
 echo "     exit 1" >> $CTEST_INIT
 echo "fi" >> $CTEST_INIT
 
-#echo "chown -R vagrant:vagrant /home/vagrant/ctest_scripts" >> $CTEST_INIT 
+#echo "chown -R vagrant:vagrant /home/vagrant/ctest_scripts" >> $CTEST_INIT
 
 echo ' if [ ! -f /usr/local/bin/ctest ]; then' >> $CTEST_INIT
 echo '    echo "ctest not found"' >> $CTEST_INIT
@@ -134,7 +135,7 @@ if [ ! -f /usr/local/bin/cmake ]; then
     else
 	cp "/vagrant/$CMAKE_FILE" .
     fi
-    
+
     tar -zxf $CMAKE_FILE
     pushd $CMAKE_VER
     ./configure --prefix=/usr/local
@@ -170,7 +171,7 @@ if [ ! -f /usr/local/lib/libhdf5.settings ]; then
     else
 	cp "/vagrant/$HDF5_FILE" .
     fi
-    
+
     tar -jxf $HDF5_FILE
     pushd $HDF5_VER
     CC=`which mpicc` ./configure --enable-shared --disable-static --disable-fortran --enable-hl --disable-fortran --enable-parallel --prefix=/usr/local
@@ -178,6 +179,23 @@ if [ ! -f /usr/local/lib/libhdf5.settings ]; then
     popd
     rm -rf $HDF5_VER
 fi
+
+##
+# In order to do netcdf-fortran testing, we need to
+# install netcdf-c in an out-of-the-way place.
+##
+if [ ! -f /home/vagrant/local2/lib/libnetcdf.settings ]; then
+    git clone http://github.com/Unidata/netcdf-c
+    pushd netcdf-c
+    mkdir build
+    cd build
+    cmake .. -DCMAKE_INSTALL_PREFIX=/home/vagrant/local2 -DENABLE_TESTS=OFF -DENABLE_PARALLEL=ON -DCMAKE_BUILD_TYPE="Release" -DCMAKE_C_COMPILER=`which mpicc`
+    make
+    make install
+    popd
+    rm -rf netcdf-c/
+fi
+
 
 #####
 # Set up git
@@ -194,9 +212,8 @@ echo "(set-face-attribute 'default nil :height 130)" >> /home/vagrant/.emacs
 echo '(custom-set-variables' >> /home/vagrant/.emacs
 echo " '(inhibit-startup-screen t)" >> /home/vagrant/.emacs
 echo " '(show-paren-mode t)" >> /home/vagrant/.emacs
-echo " '(uniquify-buffer-name-style (quote forward) nil (uniquify)))" >> /home/vagrant/.emacs 
+echo " '(uniquify-buffer-name-style (quote forward) nil (uniquify)))" >> /home/vagrant/.emacs
 
 
 chown -R vagrant:vagrant /home/vagrant
 sudo -i -u vagrant $CTEST_INIT
-
