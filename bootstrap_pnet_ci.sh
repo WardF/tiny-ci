@@ -192,7 +192,7 @@ if [ ! -f /usr/local/lib/libpnetcdf.a ]; then
 
     tar -jxf $PNET_FILE
     pushd $PNET_VER
-    CC=`which mpicc` ./configure --disable-shared --enable-static --prefix=/usr/local
+    CPPFLAGS="-fPIC" CC=`which mpicc` ./configure --prefix=/usr/local
     make -k install
     popd
     rm -rf $PNET_VER
