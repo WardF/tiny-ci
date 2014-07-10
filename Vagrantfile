@@ -30,7 +30,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.define "dash", primary: true do |v|
     v.vm.provision :shell, :path => "bootstrap_dashboard.sh"
     v.vm.network "private_network", ip: "10.1.2.10"
-    v.vm.box = "WardF/trusty64"
+    v.vm.box = "trusty64"
     v.vm.hostname = "dashboard"
 
     v.vm.provider "virtualbox" do |vb|
@@ -46,32 +46,32 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   ######
   config.vm.define "t64" do |v|
     v.vm.provision :shell, :path => "bootstrap_ci.sh"
-    v.vm.box = "WardF/trusty64"
+    v.vm.box = "trusty64"
   end
 
   config.vm.define "t32" do |v|
     v.vm.provision :shell, :path => "bootstrap_ci.sh"
-    v.vm.box = "WardF/trusty32"
+    v.vm.box = "trusty32"
   end
 
   config.vm.define "s64" do |v|
     v.vm.provision :shell, :path => "bootstrap_ci.sh"
-    v.vm.box = "WardF/saucy64"
+    v.vm.box = "saucy64"
   end
 
   config.vm.define "s32" do |v|
     v.vm.provision :shell, :path => "bootstrap_ci.sh"
-    v.vm.box = "WardF/saucy32"
+    v.vm.box = "saucy32"
   end
 
   config.vm.define "p64" do |v|
     v.vm.provision :shell, :path => "bootstrap_ci.sh"
-    v.vm.box = "WardF/precise64"
+    v.vm.box = "precise64"
   end
 
   config.vm.define "p32" do |v|
     v.vm.provision :shell, :path => "bootstrap_ci.sh"
-    v.vm.box = "WardF/precise32"
+    v.vm.box = "precise32"
   end
 
   ######
@@ -102,12 +102,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define "cent64" do |v|
     v.vm.provision :shell, :path => "bootstrap_ci.sh"
-    v.vm.box = "WardF/centos64"
+    v.vm.box = "centos64"
   end
 
   config.vm.define "cent32" do |v|
     v.vm.provision :shell, :path => "bootstrap_ci.sh"
-    v.vm.box = "WardF/centos32"
+    v.vm.box = "centos32"
   end
 
   ######
@@ -116,11 +116,15 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   ######
   # Ubuntu Boxes for HDF5 Parallel Tests
+  # Use MPICH and OPENMPI configurations.
   ######
-  config.vm.define "t64_par" do |v|
-    v.vm.provision :shell, :path => "bootstrap_par_ci.sh"
-    v.vm.box = "WardF/trusty64"
-    v.vm.hostname = "t64par"
+  
+  # OpenMPI configurations
+
+  config.vm.define "t64_openmpi" do |v|
+    v.vm.provision :shell, :path => "bootstrap_openmpi.sh"
+    v.vm.box = "trusty64"
+    v.vm.hostname = "t64openmpi"
 
     v.vm.provider "virtualbox" do |vb|
       vb.customize [
@@ -131,11 +135,41 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
   end
 
-  config.vm.define "t32_par" do |v|
-    v.vm.provision :shell, :path => "bootstrap_par_ci.sh"
-    v.vm.box = "WardF/trusty32"
-    v.vm.hostname = "t32par"
+  config.vm.define "t32_openmpi" do |v|
+    v.vm.provision :shell, :path => "bootstrap_openmpi.sh"
+    v.vm.box = "trusty32"
+    v.vm.hostname = "t32openmpi"
 
+    v.vm.provider "virtualbox" do |vb|
+      vb.customize [
+                    "modifyvm", :id,
+                    "--memory", "1024",
+                    "--cpus", "2"
+                   ]
+    end
+  end
+
+  # MPICH configurations
+
+  config.vm.define "t64_mpich" do |v|
+    v.vm.provision :shell, :path => "bootstrap_mpich.sh"
+    v.vm.box = "trusty64"
+    v.vm.hostname = "t64mpich"
+    
+    v.vm.provider "virtualbox" do |vb|
+      vb.customize [
+                    "modifyvm", :id,
+                    "--memory", "1024",
+                    "--cpus", "2"
+                   ]
+    end
+  end
+  
+  config.vm.define "t32_mpich" do |v|
+    v.vm.provision :shell, :path => "bootstrap_mpich.sh"
+    v.vm.box = "trusty32"
+    v.vm.hostname = "t32mpich"
+    
     v.vm.provider "virtualbox" do |vb|
       vb.customize [
                     "modifyvm", :id,
@@ -154,7 +188,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   ######
   config.vm.define "t64_pnet" do |v|
     v.vm.provision :shell, :path => "bootstrap_pnet_ci.sh"
-    v.vm.box = "WardF/trusty64"
+    v.vm.box = "trusty64"
     v.vm.hostname = "t64pnet"
 
     v.vm.provider "virtualbox" do |vb|
@@ -168,7 +202,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define "t32_pnet" do |v|
     v.vm.provision :shell, :path => "bootstrap_pnet_ci.sh"
-    v.vm.box = "WardF/trusty32"
+    v.vm.box = "trusty32"
     v.vm.hostname = "t32pnet"
 
     v.vm.provider "virtualbox" do |vb|
@@ -229,7 +263,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Enable provisioning with Puppet stand alone.  Puppet manifests
   # are contained in a directory path relative to this Vagrantfile.
   # You will need to create the manifests directory and a manifest in
-  # the file WardF/precise64.pp in the manifests_path directory.
+  # the file precise64.pp in the manifests_path directory.
   #
   # An example Puppet manifest to provision the message of the day:
   #
