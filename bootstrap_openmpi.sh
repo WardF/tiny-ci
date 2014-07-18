@@ -120,7 +120,7 @@ rm /home/vagrant/crontab.in
 # * hdf4
 # * hdf5
 
-CMAKE_VER="cmake-2.8.12.2"
+CMAKE_VER="cmake-3.0.0"
 HDF4_VER="hdf-4.2.10"
 HDF5_VER="hdf5-1.8.13"
 
@@ -128,7 +128,7 @@ HDF5_VER="hdf5-1.8.13"
 if [ ! -f /usr/local/bin/cmake ]; then
     CMAKE_FILE="$CMAKE_VER".tar.gz
     if [ ! -f "/vagrant/$CMAKE_FILE" ]; then
-	wget http://www.cmake.org/files/v2.8/$CMAKE_FILE
+	wget http://www.cmake.org/files/v3.0/$CMAKE_FILE
 	cp "$CMAKE_FILE" /vagrant
     else
 	cp "/vagrant/$CMAKE_FILE" .

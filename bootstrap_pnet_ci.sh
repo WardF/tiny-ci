@@ -130,7 +130,7 @@ PNET_VER="parallel-netcdf-1.4.1"
 if [ ! -f /usr/local/bin/cmake ]; then
     CMAKE_FILE="$CMAKE_VER".tar.gz
     if [ ! -f "/vagrant/$CMAKE_FILE" ]; then
-	    wget http://www.cmake.org/files/v2.8/$CMAKE_FILE
+	    wget http://www.cmake.org/files/v3.0/$CMAKE_FILE
 	    cp "$CMAKE_FILE" /vagrant
     else
 	    cp "/vagrant/$CMAKE_FILE" .
