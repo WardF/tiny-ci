@@ -1,7 +1,7 @@
 netcdf-c
 netcdf-c-build
 netcdf-fortran
-cov-analysis-linux64-7.0.2.tar.gz
+cov-analysis-linux64*
 cov-scan-build.sh
 deploy_coverity.sh
 Dashboards
