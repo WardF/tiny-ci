@@ -16,16 +16,29 @@ The VM's defined in the accompanying `Vagrantfile` are used for testing netcdf i
 
 In order for these VM's to run their CI scripts, the `netcdf-c/` and `netcdf-fortran/` directories must exist in the `tiny-ci/` directory.
 
-* `tiny-ci/`
-	* `netcdf-c/`
-	* `netcdf-fortran/`
-	* `Vagrantfile`
-	* `README.md`
-	* ...
+In order for the VM's to run continuous integration, the relevant project directories must exist.  The projects which are checked for are:
+
+* `netcdf-c/` - The netcdf-c project.
+* `netcdf-fortran/` - The netcdf-fortran project.
+* `netcdf-image/` - Ward's pilot project which may or may not go anywhere.
 
 Changes made to these local git repositories will be tested by the CI instances.
 
     Note: If you change branches in the repository on the host machine, you *must* restart the VM in order for the CI script to begin watching this new branch.
+
+## Suppressing Continuous Integration Testing
+
+In the event that you want to use a VM for development or on-the-spot tests, instead of Continuous Integration testing, you would create the following files in the root `tiny-ci/` directory (`/vagrant/` on the VM).
+
+* `NOTEST` - Prevents any CI tests from running.
+* `NOTESTC` - Prevents CI tests for `netcdf-c` from running.
+* `NOTESTF` - Prevents CI tests for `netcdf-fortran` from running.
+* `NOTESTI` - Prevents CI tests for `netcdf-image` from running.
+
+Note: 
+
+    These files may be created and deleted on-the-fly.  The CI script will run at boot, but it checks for the presence of these files before running any tests.  If they are present, no tests are run.
+
 
 
 ## Instantiate VM's
@@ -69,14 +82,4 @@ If you want to change branches in `netcdf-c` on the host machine, you will need 
 
 Note that every time you restart the CI instance, it will repeat the *initial* CI analysis, which may lead to multiple listings in the Dashboard. 
 
-### Suppressing Continuous Integration Testing
 
-In the event that you want to use a VM for development or on-the-spot tests, instead of Continuous Integration testing, you would create the following files in the root `tiny-ci/` directory (`/vagrant/` on the VM).
-
-* `NOTEST` - Prevents any CI tests from running.
-* `NOTESTC` - Prevents CI tests for `netcdf-c` from running.
-* `NOTESTF` - Prevents CI tests for `netcdf-fortran` from running.
-
-Note: 
-
-    These files may be created and deleted on-the-fly.  The CI script will run at boot, but it checks for the presence of these files before running any tests.  If they are present, no tests are run.

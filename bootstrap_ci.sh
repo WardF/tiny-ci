@@ -58,11 +58,12 @@ fi
 # Install CTest as a script in the 'vagrant' home directory.
 #####
 CTEST_INIT="/home/vagrant/ctest_service.sh"
-LOCKFILE="/vagrant/NOTEST"
+
+# Lockfile information is now
+# in the CI .cmake scripts.
 
 echo '#!/bin/bash' > $CTEST_INIT
 echo 'sleep 10' >> $CTEST_INIT
-echo "LFILE=\"$LOCKFILE\"" >> $CTEST_INIT
 echo 'CTEST_HOME="/home/vagrant/ctest_scripts"' >> $CTEST_INIT
 echo 'DASH="$CTEST_HOME/Dashboards"' >> $CTEST_INIT
 echo 'rm -rf $CTEST_HOME' >> $CTEST_INIT
