@@ -49,6 +49,20 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     v.vm.box = "trusty64"
   end
 
+  config.vm.define "t64-big" do |v|
+    v.vm.provision :shell, :path => "bootstrap_ci.sh"
+    v.vm.box = "trusty64"
+    v.vm.hostname = "bigt64"
+
+    v.vm.provider "virtualbox" do |vb|
+      vb.customize [
+                    "modifyvm", :id,
+                    "--memory", "2048",
+                    "--cpus", "2"
+                   ]
+    end
+  end
+
   config.vm.define "t32" do |v|
     v.vm.provision :shell, :path => "bootstrap_ci.sh"
     v.vm.box = "trusty32"
@@ -118,7 +132,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Ubuntu Boxes for HDF5 Parallel Tests
   # Use MPICH and OPENMPI configurations.
   ######
-  
+
   # OpenMPI configurations
 
   config.vm.define "t64_openmpi" do |v|
@@ -155,7 +169,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     v.vm.provision :shell, :path => "bootstrap_mpich.sh"
     v.vm.box = "trusty64"
     v.vm.hostname = "t64mpich"
-    
+
     v.vm.provider "virtualbox" do |vb|
       vb.customize [
                     "modifyvm", :id,
@@ -164,12 +178,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
                    ]
     end
   end
-  
+
   config.vm.define "t32_mpich" do |v|
     v.vm.provision :shell, :path => "bootstrap_mpich.sh"
     v.vm.box = "trusty32"
     v.vm.hostname = "t32mpich"
-    
+
     v.vm.provider "virtualbox" do |vb|
       vb.customize [
                     "modifyvm", :id,
