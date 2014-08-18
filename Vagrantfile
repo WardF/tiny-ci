@@ -49,7 +49,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     v.vm.box = "trusty64"
   end
 
-  config.vm.define "t64-big" do |v|
+  config.vm.define "t64_big" do |v|
     v.vm.provision :shell, :path => "bootstrap_ci.sh"
     v.vm.box = "trusty64"
     v.vm.hostname = "bigt64"
