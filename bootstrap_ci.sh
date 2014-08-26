@@ -219,7 +219,7 @@ echo "	'((\"CMakeLists\\.txt\\'\" . cmake-mode))" >> /home/vagrant/.emacs
 echo "	'((\"\\.cmake\\'\" . cmake-mode))" >> /home/vagrant/.emacs
 echo "	auto-mode-alist))" >> /home/vagrant/.emacs
 echo "" >> /home/vagrant/.emacs
-echo "(autoload 'cmake-mode \"~/CMake/Auxiliary/cmake-mode.el\" t)" >> /home/vagrant/.emacs
+echo "(autoload 'cmake-mode \"/usr/share/emacs/site-lisp/cmake-mode.el\" t)" >> /home/vagrant/.emacs
 
 
 chown -R vagrant:vagrant /home/vagrant
