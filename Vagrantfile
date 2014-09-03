@@ -231,6 +231,23 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # End Ubuntu Boxes for pnetcdf Parallel Tests
   ######
 
+  ######
+  # Plain ubuntu box.
+  ######
+
+  config.vm.define "plain", primary: true do |v|
+    v.vm.box = "ubuntu/trusty64"
+    v.vm.hostname = "plain"
+
+    v.vm.provider "virtualbox" do |vb|
+      vb.customize [
+                    "modifyvm", :id,
+                    "--memory", "512"
+                   ]
+    end
+  end
+
+
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
   # config.vm.box_url = "http://domain.com/path/to/above.box"
