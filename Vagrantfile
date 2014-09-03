@@ -30,7 +30,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.define "dash", primary: true do |v|
     v.vm.provision :shell, :path => "bootstrap_dashboard.sh"
     v.vm.network "private_network", ip: "10.1.2.10"
-    v.vm.box = "ubuntu/trusty64"
+    v.vm.box = "ubuntu/precise64"
     v.vm.hostname = "dashboard"
 
     v.vm.provider "virtualbox" do |vb|
