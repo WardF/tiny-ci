@@ -181,7 +181,7 @@ fi
 # install netcdf-c in an out-of-the-way place.
 ##
 if [ ! -f /home/vagrant/local2/lib/libnetcdf.settings ]; then
-    git clone http://github.com/Unidata/netcdf-c
+    git clone git://github.com/Unidata/netcdf-c
     pushd netcdf-c
     mkdir build
     cd build
