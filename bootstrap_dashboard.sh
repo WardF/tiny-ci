@@ -86,6 +86,7 @@ if [ ! -d /vagrant/netcdf-c ]; then
     VFILE="/vagrant/NETCDF_MISSING_RUNME.sh"
     echo '#!/bin/bash' > $VFILE
     echo 'git clone https://github.com/Unidata/netcdf-c' >> $VFILE
+    echo 'git clone https://github.com/Unidata/netcdf-fortran' >> $VFILE
     echo 'rm $0' >> $VFILE
     chmod 755 $VFILE
     touch /vagrant/NOTEST

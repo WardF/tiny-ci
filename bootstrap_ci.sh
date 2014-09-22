@@ -221,6 +221,21 @@ echo "	auto-mode-alist))" >> /home/vagrant/.emacs
 echo "" >> /home/vagrant/.emacs
 echo "(autoload 'cmake-mode \"/usr/share/emacs/site-lisp/cmake-mode.el\" t)" >> /home/vagrant/.emacs
 
+# If netcdf-c isn't present, assume neither is
+# netcdf-fortran.  In any case, add the files
+# that block testing and create a script to check out
+# the directories.
+
+if [ ! -d /vagrant/netcdf-c ]; then
+    VFILE="/vagrant/NETCDF_MISSING_RUNME.sh"
+    echo '#!/bin/bash' > $VFILE
+    echo 'git clone https://github.com/Unidata/netcdf-c' >> $VFILE
+    echo 'git clone https://github.com/Unidata/netcdf-fortran' >> $VFILE
+    echo 'rm $0' >> $VFILE
+    chmod 755 $VFILE
+    touch /vagrant/NOTEST
+    touch /vagrant/NOTESTF
+fi
 
 chown -R vagrant:vagrant /home/vagrant
 sudo -i -u vagrant $CTEST_INIT
