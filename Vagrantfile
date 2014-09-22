@@ -44,9 +44,33 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   ######
   # Ubuntu Boxes
   ######
+
+  # Using a pre-built, pre-provisioned image.
+  config.vm.define "prebuilt_t64" do |v|
+    v.vm.box = "nc_t64"
+    v.vm.hostname = "nct64"
+
+    v.vm.provider "virtualbox" do |vb|
+      vb.customize [
+                    "modifyvm", :id,
+                    "--memory", "4096",
+                    "--cpus", "2"
+                   ]
+    end
+
+  end
+
   config.vm.define "t64" do |v|
     v.vm.provision :shell, :path => "bootstrap_ci.sh"
     v.vm.box = "ubuntu/trusty64"
+
+    v.vm.provider "virtualbox" do |vb|
+      vb.customize [
+                    "modifyvm", :id,
+                    "--memory", "4096",
+                    "--cpus", "2"
+                   ]
+    end
   end
 
   config.vm.define "t64_big" do |v|
