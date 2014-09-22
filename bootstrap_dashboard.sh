@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Bootstrap a CDash installation.  The mysql data will live in /vagrant/mysql.
-# Assume we are using a Ubuntu machine for the dashboard. 
+# Assume we are using a Ubuntu machine for the dashboard.
 #
 apt-get update
 
@@ -16,7 +16,7 @@ apt-get -y -q install wget apache2 mysql-server php5 php5-mysql php5-xsl php5-cu
 echo "US/Mountain" | tee /etc/timezone
 dpkg-reconfigure --frontend noninteractive tzdata
 
-##### 
+#####
 # Install CDash, configure mysql
 #####
 
@@ -58,7 +58,7 @@ if [ ! -f $HTMLDIR/CDash ]; then
     # that can be used to export the database file.
     if [ -f /vagrant/default_cdash_database.sql.gz ]; then
 	echo "Importing pre-existing database."
-	gunzip < /vagrant/default_cdash_database.sql.gz | mysql -u root cdash 
+	gunzip < /vagrant/default_cdash_database.sql.gz | mysql -u root cdash
     else
 	# Create a script for easy export of database, once it's been configured.
 	echo "You must configure a default database for use with CDash."
@@ -74,7 +74,7 @@ if [ ! -f $HTMLDIR/CDash ]; then
     echo "echo Finished." >> $SQLSCRIPT
     chmod 755 $SQLSCRIPT
     chown vagrant:vagrant $SQLSCRIPT
-    
+
     apache2ctl restart
 fi
 
@@ -88,10 +88,8 @@ if [ ! -d /vagrant/netcdf-c ]; then
     echo 'git clone https://github.com/Unidata/netcdf-c' >> $VFILE
     echo 'rm $0' >> $VFILE
     chmod 755 $VFILE
+    touch /vagrant/NOTEST
+    touch /vagrant/NOTESTF
 fi
 
 exit 0
-
-
-
-
