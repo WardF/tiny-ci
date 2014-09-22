@@ -68,6 +68,20 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     v.vm.box = "ubuntu/trusty32"
   end
 
+  config.vm.define "t32_big" do |v|
+    v.vm.provision :shell, :path => "bootstrap_ci.sh"
+    v.vm.box = "ubuntu/trusty32"
+    v.vm.hostname = "bigt32"
+
+    v.vm.provider "virtualbox" do |vb|
+      vb.customize [
+                    "modifyvm", :id,
+                    "--memory", "4096",
+                    "--cpus", "2"
+                   ]
+    end
+  end
+
   config.vm.define "s64" do |v|
     v.vm.provision :shell, :path => "bootstrap_ci.sh"
     v.vm.box = "saucy64"
