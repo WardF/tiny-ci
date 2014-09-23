@@ -122,7 +122,7 @@ rm /home/vagrant/crontab.in
 # * hdf4
 # * hdf5
 
-CMAKE_VER="cmake-3.0.1"
+CMAKE_VER="cmake-3.0.2"
 HDF4_VER="hdf-4.2.10"
 HDF5_VER="hdf5-1.8.13"
 
