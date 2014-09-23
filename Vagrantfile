@@ -298,6 +298,30 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
   end
 
+  # Pre-built developer boxes, without ctest infrastructure.
+  config.vm.define "dev64" do |v|
+    v.vm.box = "wf_dev64"
+    v.vm.hostname = "dev64"
+    v.vm.provider "virtualbox" do |vb|
+      vb.customize [
+                    "modifyvm", :id,
+                    "--memory", "2048",
+                    "--cpus", "2"
+                   ]
+    end
+  end
+
+  config.vm.define "dev32" do |v|
+    v.vm.box = "wf_dev32"
+    v.vm.hostname = "dev32"
+    v.vm.provider "virtualbox" do |vb|
+      vb.customize [
+                    "modifyvm", :id,
+                    "--memory", "2048",
+                    "--cpus", "2"
+                   ]
+    end
+  end
 
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
