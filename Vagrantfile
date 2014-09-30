@@ -50,26 +50,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     v.vm.box = "nc_t64"
     v.vm.hostname = "nct64"
 
-    v.vm.provider "virtualbox" do |vb|
-      vb.customize [
-                    "modifyvm", :id,
-                    "--memory", "4096",
-                    "--cpus", "2"
-                   ]
-    end
   end
 
   config.vm.define "prebuilt_t32" do |v|
     v.vm.box = "nc_t32"
     v.vm.hostname = "nct32"
-
-    v.vm.provider "virtualbox" do |vb|
-      vb.customize [
-                    "modifyvm", :id,
-                    "--memory", "4096",
-                    "--cpus", "2"
-                   ]
-    end
 
   end
 
