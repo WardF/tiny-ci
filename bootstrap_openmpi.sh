@@ -20,6 +20,7 @@ elif [ `which yum | wc -w` -gt 0 ]; then
 fi
 
 $PKG_UPDATE
+#$PKG_CMD -y upgrade
 $PKG_CMD -y install $PKG_LIST
 $GRP_LIST
 #####
@@ -57,11 +58,12 @@ fi
 # Install CTest as a script in the 'vagrant' home directory.
 #####
 CTEST_INIT="/home/vagrant/ctest_service.sh"
-LOCKFILE="/vagrant/NOTEST"
+# Lockfile information is now
+# in the CI .cmake scripts.
 
 echo '#!/bin/bash' > $CTEST_INIT
 echo 'sleep 10' >> $CTEST_INIT
-echo "LFILE=\"$LOCKFILE\"" >> $CTEST_INIT
+
 echo 'CTEST_HOME="/home/vagrant/ctest_scripts"' >> $CTEST_INIT
 echo 'DASH="$CTEST_HOME/Dashboards"' >> $CTEST_INIT
 echo 'rm -rf $CTEST_HOME' >> $CTEST_INIT
@@ -84,22 +86,18 @@ echo "else" >> $CTEST_INIT
 echo "     exit 1" >> $CTEST_INIT
 echo "fi" >> $CTEST_INIT
 
-#echo "chown -R vagrant:vagrant /home/vagrant/ctest_scripts" >> $CTEST_INIT
-
 echo ' if [ ! -f /usr/local/bin/ctest ]; then' >> $CTEST_INIT
 echo '    echo "ctest not found"' >> $CTEST_INIT
 echo '    exit 1' >> $CTEST_INIT
 echo ' fi' >> $CTEST_INIT
-echo '      /bin/rm -rf $DASH' >> $CTEST_INIT
-echo '	    echo "Starting ctest"' >> $CTEST_INIT
-echo '      cd /home/vagrant/ctest_scripts/' >> $CTEST_INIT
-echo '      /usr/local/bin/ctest -V -S PARCI.cmake > continuous_test.out 2>&1 &' >> $CTEST_INIT
+echo '/bin/rm -rf $DASH' >> $CTEST_INIT
+echo 'echo "Starting ctest"' >> $CTEST_INIT
+echo 'cd /home/vagrant/ctest_scripts/' >> $CTEST_INIT
+echo '/usr/local/bin/ctest -V -S PARCI.cmake > ccontinuous_test.out 2>&1 &' >> $CTEST_INIT
 
 
 echo 'exit $RETVAL' >> $CTEST_INIT
 chmod 755 $CTEST_INIT
-#update-rc.d ctest defaults 99
-
 
 ####
 # End installation of ctest as a script.
@@ -183,7 +181,7 @@ fi
 # install netcdf-c in an out-of-the-way place.
 ##
 if [ ! -f /home/vagrant/local2/lib/libnetcdf.settings ]; then
-    git clone http://github.com/Unidata/netcdf-c
+    git clone git://github.com/Unidata/netcdf-c
     pushd netcdf-c
     mkdir build
     cd build
@@ -211,7 +209,32 @@ echo '(custom-set-variables' >> /home/vagrant/.emacs
 echo " '(inhibit-startup-screen t)" >> /home/vagrant/.emacs
 echo " '(show-paren-mode t)" >> /home/vagrant/.emacs
 echo " '(uniquify-buffer-name-style (quote forward) nil (uniquify)))" >> /home/vagrant/.emacs
+echo "" >> /home/vagrant/.emacs
 
+echo "; Add cmake listfile names to the mode list." >> /home/vagrant/.emacs
+echo "(setq auto-mode-alist" >> /home/vagrant/.emacs
+echo "	(append" >> /home/vagrant/.emacs
+echo "	'((\"CMakeLists\\.txt\\'\" . cmake-mode))" >> /home/vagrant/.emacs
+echo "	'((\"\\.cmake\\'\" . cmake-mode))" >> /home/vagrant/.emacs
+echo "	auto-mode-alist))" >> /home/vagrant/.emacs
+echo "" >> /home/vagrant/.emacs
+echo "(autoload 'cmake-mode \"/usr/share/emacs/site-lisp/cmake-mode.el\" t)" >> /home/vagrant/.emacs
+
+# If netcdf-c isn't present, assume neither is
+# netcdf-fortran.  In any case, add the files
+# that block testing and create a script to check out
+# the directories.
+
+if [ ! -d /vagrant/netcdf-c ]; then
+    VFILE="/vagrant/NETCDF_MISSING_RUNME.sh"
+    echo '#!/bin/bash' > $VFILE
+    echo 'git clone https://github.com/Unidata/netcdf-c' >> $VFILE
+    echo 'git clone https://github.com/Unidata/netcdf-fortran' >> $VFILE
+    echo 'rm $0' >> $VFILE
+    chmod 755 $VFILE
+    touch /vagrant/NOTEST
+    touch /vagrant/NOTESTF
+fi
 
 chown -R vagrant:vagrant /home/vagrant
 sudo -i -u vagrant $CTEST_INIT
