@@ -17,6 +17,7 @@ dohelp ()
     echo -e "\t-p [type]    Parallel Processing Type"
     echo -e "\t               o openmpi"
     echo -e "\t               o mpich"
+    echo -e "\t-c           Enable Night Test Cron Job"
     echo ""
 }
 
@@ -29,13 +30,14 @@ LINTYPE=""
 PARTYPE=""
 ISPAR=""
 CIFILE="CI.cmake"
+DOCRON=""
 
 ####
 # Parse options, validate
 # arguments.
 ####
 
-while getopts "l:p:" o; do
+while getopts "l:p:c" o; do
     case "${o}" in
         l)
             LINTYPE=${OPTARG}
@@ -44,6 +46,9 @@ while getopts "l:p:" o; do
             PARTYPE=${OPTARG}
             ISPAR="TRUE"
             CIFILE="PARCI.cmake"
+            ;;
+        c)
+            DOCRON="TRUE"
             ;;
         *)
             dohelp
@@ -204,6 +209,7 @@ if [ "x$ISPAR" = "xTRUE" ]; then
     echo ' /usr/local/bin/ctest -V -S PARCI.cmake > ccontinuous_test.out 2>&1 &' >> $CTEST_INIT
 else
     echo ' /usr/local/bin/ctest -V -S CI.cmake > ccontinuous_test.out 2>&1 &' >> $CTEST_INIT
+    echo '/usr/local/bin/ctest -V -S FCI.cmake > fcontinuous_test.out 2>&1 &' >> $CTEST_INIT
 fi
 
 echo 'exit $RETVAL' >> $CTEST_INIT
@@ -216,20 +222,25 @@ chmod 755 $CTEST_INIT
 # haven't been installed yet.
 ####
 
-### Install a crontab for running nightly tests.
-sudo -i -u vagrant echo "@reboot $CTEST_INIT" > /home/vagrant/crontab.in
+CRONLOCKFILE="/home/vagrant/.cronlock"
+if [ "x$DOCRON" = "xTRUE" ]; then
+    if [ ! -f $CRONLOCKFILE ]; then
+        ### Install a crontab for running nightly tests.
+        sudo -i -u vagrant echo "@reboot $CTEST_INIT" > /home/vagrant/crontab.in
 
-# If it's a parallel build, we have to pass 'par' to the nightly test script.
+        # If it's a parallel build, we have to pass 'par' to the nightly test script.
 
-if [ "x$ISPAR" = "xTRUE" ]; then
-    sudo -i -u vagrant echo '01 0 * * * cd /home/vagrant/ctest_scripts && /home/vagrant/ctest_scripts/run_nightly_test.sh par > nightly_log.txt' >> /home/vagrant/crontab.in
-else
-    sudo -i -u vagrant echo '01 0 * * * cd /home/vagrant/ctest_scripts && /home/vagrant/ctest_scripts/run_nightly_test.sh > nightly_log.txt' >> /home/vagrant/crontab.in
+        if [ "x$ISPAR" = "xTRUE" ]; then
+            sudo -i -u vagrant echo '01 0 * * * cd /home/vagrant/ctest_scripts && /home/vagrant/ctest_scripts/run_nightly_test.sh par > nightly_log.txt' >> /home/vagrant/crontab.in
+        else
+            sudo -i -u vagrant echo '01 0 * * * cd /home/vagrant/ctest_scripts && /home/vagrant/ctest_scripts/run_nightly_test.sh > nightly_log.txt' >> /home/vagrant/crontab.in
+        fi
+
+        sudo -i -u vagrant crontab < /home/vagrant/crontab.in
+        rm /home/vagrant/crontab.in
+    fi
 fi
 
-
-sudo -i -u vagrant crontab < /home/vagrant/crontab.in
-rm /home/vagrant/crontab.in
 
 
 ## Install several packages from source.
