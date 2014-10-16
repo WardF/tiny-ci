@@ -59,7 +59,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   config.vm.define "t64" do |v|
-    v.vm.provision :shell, :path => "bootstrap_ci.sh"
+    v.vm.provision :shell, :path => "bootstrap_ci_linux_new.sh", :args => "-l ubuntu"
     v.vm.box = "ubuntu/trusty64"
 
     v.vm.provider "virtualbox" do |vb|
@@ -72,7 +72,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   config.vm.define "t64_big" do |v|
-    v.vm.provision :shell, :path => "bootstrap_ci.sh"
+    v.vm.provision :shell, :path => "bootstrap_ci_linux_new.sh", :args => "-l ubuntu"
     v.vm.box = "ubuntu/trusty64"
     v.vm.hostname = "bigt64"
 
@@ -86,12 +86,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   config.vm.define "t32" do |v|
-    v.vm.provision :shell, :path => "bootstrap_ci.sh"
+    v.vm.provision :shell, :path => "bootstrap_ci_linux_new.sh", :args => "-l ubuntu"
     v.vm.box = "ubuntu/trusty32"
   end
 
   config.vm.define "t32_big" do |v|
-    v.vm.provision :shell, :path => "bootstrap_ci.sh"
+    v.vm.provision :shell, :path => "bootstrap_ci_linux_new.sh", :args => "-l ubuntu"
     v.vm.box = "ubuntu/trusty32"
     v.vm.hostname = "bigt32"
 
@@ -105,17 +105,17 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   config.vm.define "s64" do |v|
-    v.vm.provision :shell, :path => "bootstrap_ci.sh"
+    v.vm.provision :shell, :path => "bootstrap_ci_linux_new.sh", :args => "-l ubuntu"
     v.vm.box = "saucy64"
   end
 
   config.vm.define "s32" do |v|
-    v.vm.provision :shell, :path => "bootstrap_ci.sh"
+    v.vm.provision :shell, :path => "bootstrap_ci_linux_new.sh", :args => "-l ubuntu"
     v.vm.box = "saucy32"
   end
 
   config.vm.define "p64" do |v|
-    v.vm.provision :shell, :path => "bootstrap_ci.sh"
+    v.vm.provision :shell, :path => "bootstrap_ci_linux_new.sh", :args => "-l ubuntu"
     v.vm.box = "ubuntu/precise64"
   end
 
@@ -151,12 +151,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   ######
 
   config.vm.define "cent64" do |v|
-    v.vm.provision :shell, :path => "bootstrap_ci.sh"
+    v.vm.provision :shell, :path => "bootstrap_ci_linux_new.sh", :args => "-l centos"
     v.vm.box = "centos64"
   end
 
   config.vm.define "cent32" do |v|
-    v.vm.provision :shell, :path => "bootstrap_ci.sh"
+    v.vm.provision :shell, :path => "bootstrap_ci_linux_new.sh", :args => "-l centos"
     v.vm.box = "centos32"
   end
 
@@ -172,7 +172,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # OpenMPI configurations
 
   config.vm.define "t64_openmpi" do |v|
-    v.vm.provision :shell, :path => "bootstrap_openmpi.sh"
+    v.vm.provision :shell, :path => "bootstrap_ci_linux_new.sh", :args => "-l ubuntu -p openmpi"
     v.vm.box = "ubuntu/trusty64"
     v.vm.hostname = "t64openmpi"
 
@@ -186,7 +186,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   config.vm.define "t32_openmpi" do |v|
-    v.vm.provision :shell, :path => "bootstrap_openmpi.sh"
+    v.vm.provision :shell, :path => "bootstrap_ci_linux_new.sh", :args => "-l ubuntu -p openmpi"
     v.vm.box = "ubuntu/trusty32"
     v.vm.hostname = "t32openmpi"
 
@@ -202,7 +202,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # MPICH configurations
 
   config.vm.define "t64_mpich" do |v|
-    v.vm.provision :shell, :path => "bootstrap_mpich.sh"
+    v.vm.provision :shell, :path => "bootstrap_ci_linux_new.sh", :args => "-l ubuntu -p mpich"
     v.vm.box = "ubuntu/trusty64"
     v.vm.hostname = "t64mpich"
 
@@ -216,7 +216,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   config.vm.define "t32_mpich" do |v|
-    v.vm.provision :shell, :path => "bootstrap_mpich.sh"
+    v.vm.provision :shell, :path => "bootstrap_ci_linux_new.sh", :args => "-l ubuntu -p mpich"
     v.vm.box = "ubuntu/trusty32"
     v.vm.hostname = "t32mpich"
 

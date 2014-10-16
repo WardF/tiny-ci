@@ -17,6 +17,7 @@ dohelp ()
     echo -e "\t-p [type]    Parallel Processing Type"
     echo -e "\t               o openmpi"
     echo -e "\t               o mpich"
+    echo -e "\t               o pnet"
     echo -e "\t-c           Enable Night Test Cron Job"
     echo ""
 }
@@ -46,6 +47,11 @@ while getopts "l:p:c" o; do
             PARTYPE=${OPTARG}
             ISPAR="TRUE"
             CIFILE="PARCI.cmake"
+            if [ "$PARTYPE" = "pnet" ]; then
+                # This will need to be changed
+                # once I figure out how to change it.
+                CIFILE="CI.cmake"
+            fi
             ;;
         c)
             DOCRON="TRUE"
@@ -72,6 +78,8 @@ if [ "x$ISPAR" = "xTRUE" ]; then
         mpich)
             ;;
         openmpi)
+            ;;
+        pnet)
             ;;
         *)
             echo "Error: Unknown parallel API type."
@@ -301,7 +309,9 @@ if [ ! -f /usr/local/lib/libhdf5.settings ]; then
     tar -jxf $HDF5_FILE
     pushd $HDF5_VER
 
-
+    # This will get a little complicated.
+    # If ISPAR is true, but PARTYPE is pnet, then we want
+    # to build with mpicc, but disable native parallel.
     if [ "x$ISPAR" = "xTRUE" ]; then
         CC=`which mpicc` ./configure --enable-shared --disable-static --disable-fortran --enable-hl --disable-fortran --enable-parallel --prefix=/usr/local
     else
@@ -312,6 +322,27 @@ if [ ! -f /usr/local/lib/libhdf5.settings ]; then
     popd
     rm -rf $HDF5_VER
 fi
+
+
+if [ "x$PARTYPE" = "pnet" ]; then
+    if [ ! -f /usr/local/lib/libpnetcdf.a ]; then
+        PNET_FILE="$PNET_VER.tar.bz2"
+        if [ ! -f "/vagrant/$PNET_FILE" ]; then
+            wget http://cucis.ece.northwestern.edu/projects/PnetCDF/Release/$PNET_FILE
+            cp "$PNET_FILE" /vagrant
+        else
+            cp "/vagrant/$PNET_FILE" .
+        fi
+
+        tar -jxf $PNET_FILE
+        pushd $PNET_VER
+        CPPFLAGS="-fPIC" CC=`which mpicc` ./configure --prefix=/usr/local
+        make -k install
+        popd
+        rm -rf $PNET_VER
+    fi
+fi
+
 
 ##
 # In order to do netcdf-fortran testing, we need to
