@@ -41,7 +41,7 @@ if [ ! -f $HTMLDIR/CDash ]; then
     # Stop mysql for the time being.
     # stop mysql
 
-    svn co --non-interactive --trust-server-cert https://www.kitware.com/svn/CDash/Release-2-2-0 CDash
+    svn co --non-interactive --trust-server-cert https://www.kitware.com/svn/CDash/Release-2-2-2 CDash
     # Start mysql back up.
     # start mysql
 
