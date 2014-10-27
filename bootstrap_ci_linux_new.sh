@@ -18,6 +18,7 @@ dohelp ()
     echo -e "\t               o openmpi"
     echo -e "\t               o mpich"
     echo -e "\t               o pnet"
+    echo -e "\t-a [ver]     Alternate HDF5 Version"
     echo -e "\t-c           Enable Night Test Cron Job"
     echo ""
 }
@@ -30,15 +31,17 @@ fi
 LINTYPE=""
 PARTYPE=""
 ISPAR=""
-CIFILE="CI.cmake"
 DOCRON=""
 
+CIFILE="CI.cmake"
+FCIFILE="FCI.cmake"
+HDF5VER="1.8.13"
 ####
 # Parse options, validate
 # arguments.
 ####
 
-while getopts "l:p:c" o; do
+while getopts "l:p:ca:" o; do
     case "${o}" in
         l)
             LINTYPE=${OPTARG}
@@ -55,6 +58,9 @@ while getopts "l:p:c" o; do
             ;;
         c)
             DOCRON="TRUE"
+            ;;
+        a)
+            HDF5VER=${OPTARG}
             ;;
         *)
             dohelp
@@ -101,7 +107,7 @@ if [ "$LINTYPE" = "ubuntu" ]; then
     PKG_UPDATE="$PKG_CMD update"
     GRP_LIST=""
 
-    PKG_LIST="ubuntu-dev-tools m4 git libjpeg-dev libcurl4-openssl-dev wget htop libtool bison flex autoconf curl g++ midori emacs valgrind"
+    PKG_LIST="ubuntu-dev-tools m4 git libjpeg-dev libcurl4-openssl-dev wget htop libtool bison flex autoconf curl g++ midori emacs valgrind gfortran"
 
     if [ "x$ISPAR" = "xTRUE" ]; then
         case ${PARTYPE} in
@@ -127,14 +133,14 @@ if [ "$LINTYPE" = "centos" ]; then
     PKG_CMD=`which yum`
     GRP_LIST="yum -y groupinstall Development tools"
 
-    PKG_LIST="m4 git libjpeg-turbo-devel libcurl-devel wget nano libtool bison flex autoconf curl"
+    PKG_LIST="m4 git libjpeg-turbo-devel libcurl-devel wget nano libtool bison flex autoconf curl gfortran"
     if [ "x$ISPAR" = "xTRUE" ]; then
         case ${PARTYPE} in
             mpich)
-                PKG_LIST="$PKG_LIST"
+                PKG_LIST="$PKG_LIST mpich2-devel"
                 ;;
             openmpi)
-                PKG_LIST="$PKG_LIST"
+                PKG_LIST="$PKG_LIST openmpi-devel"
                 ;;
             *)
                 ;;
@@ -215,9 +221,10 @@ echo ' cd /home/vagrant/ctest_scripts/' >> $CTEST_INIT
 
 if [ "x$ISPAR" = "xTRUE" ]; then
     echo ' /usr/local/bin/ctest -V -S PARCI.cmake > ccontinuous_test.out 2>&1 &' >> $CTEST_INIT
+    echo ' /usr/local/bin/ctest -V -S FPARCI.cmake > fcontinuous_test.out 2>&1 &' >> $CTEST_INIT
 else
     echo ' /usr/local/bin/ctest -V -S CI.cmake > ccontinuous_test.out 2>&1 &' >> $CTEST_INIT
-    echo '/usr/local/bin/ctest -V -S FCI.cmake > fcontinuous_test.out 2>&1 &' >> $CTEST_INIT
+    echo ' /usr/local/bin/ctest -V -S FCI.cmake > fcontinuous_test.out 2>&1 &' >> $CTEST_INIT
 fi
 
 echo 'exit $RETVAL' >> $CTEST_INIT
@@ -236,20 +243,25 @@ if [ "x$DOCRON" = "xTRUE" ]; then
         ### Install a crontab for running nightly tests.
         sudo -i -u vagrant echo "@reboot $CTEST_INIT" > /home/vagrant/crontab.in
 
-        # If it's a parallel build, we have to pass 'par' to the nightly test script.
+    ### Install a crontab for running nightly tests.
+    sudo -i -u vagrant echo "@reboot $CTEST_INIT" > /home/vagrant/crontab.in
 
-        if [ "x$ISPAR" = "xTRUE" ]; then
-            sudo -i -u vagrant echo '01 0 * * * cd /home/vagrant/ctest_scripts && /home/vagrant/ctest_scripts/run_nightly_test.sh par > nightly_log.txt' >> /home/vagrant/crontab.in
-        else
-            sudo -i -u vagrant echo '01 0 * * * cd /home/vagrant/ctest_scripts && /home/vagrant/ctest_scripts/run_nightly_test.sh > nightly_log.txt' >> /home/vagrant/crontab.in
-        fi
+    # If it's a parallel build, we have to pass 'par' to the nightly test script.
 
-        sudo -i -u vagrant crontab < /home/vagrant/crontab.in
-        rm /home/vagrant/crontab.in
+    if [ "x$ISPAR" = "xTRUE" ]; then
+        sudo -i -u vagrant echo '01 0 * * * cd /home/vagrant/ctest_scripts && /home/vagrant/ctest_scripts/run_nightly_test.sh -p -l netcdf-c > nightly_log_c.txt' >> /home/vagrant/crontab.in
+        sudo -i -u vagrant echo '01 1  * * * cd /home/vagrant/ctest_scripts && /home/vagrant/ctest_scripts/run_nightly_test.sh -p -l netcdf-fortran > nightly_log_fortran.txt' >> /home/vagrant/crontab.in
+    else
+        sudo -i -u vagrant echo '01 0 * * * cd /home/vagrant/ctest_scripts && /home/vagrant/ctest_scripts/run_nightly_test.sh -l netcdf-c > nightly_log_c.txt' >> /home/vagrant/crontab.in
+        sudo -i -u vagrant echo '01 1 * * * cd /home/vagrant/ctest_scripts && /home/vagrant/ctest_scripts/run_nightly_test.sh -l netcdf-fortran > nightly_log_fortran.txt' >> /home/vagrant/crontab.in
     fi
 fi
 
 
+    sudo -i -u vagrant crontab < /home/vagrant/crontab.in
+    rm /home/vagrant/crontab.in
+fi
+#end check for cron
 
 ## Install several packages from source.
 # * cmake
@@ -258,22 +270,22 @@ fi
 
 CMAKE_VER="cmake-3.0.2"
 HDF4_VER="hdf-4.2.10"
-HDF5_VER="hdf5-1.8.13"
+HDF5_VER="hdf5-$HDF5VER"
 
 # Install cmake from source
 if [ ! -f /usr/local/bin/cmake ]; then
     CMAKE_FILE="$CMAKE_VER".tar.gz
     if [ ! -f "/vagrant/$CMAKE_FILE" ]; then
-	wget http://www.cmake.org/files/v3.0/$CMAKE_FILE
-	cp "$CMAKE_FILE" /vagrant
+	    wget http://www.cmake.org/files/v3.0/$CMAKE_FILE
+	    cp "$CMAKE_FILE" /vagrant
     else
-	cp "/vagrant/$CMAKE_FILE" .
+	    cp "/vagrant/$CMAKE_FILE" .
     fi
 
     tar -zxf $CMAKE_FILE
     pushd $CMAKE_VER
     ./configure --prefix=/usr/local
-    make install
+    make install -j 2
     popd
     rm -rf $CMAKE_VER
 fi
@@ -291,7 +303,7 @@ if [ ! -f /usr/local/lib/libhdf4.settings ]; then
     tar -jxf $HDF4_FILE
     pushd $HDF4_VER
     ./configure --disable-static --enable-shared --disable-netcdf --disable-fortran --prefix=/usr/local
-    sudo make install
+    sudo make install -j 2
     popd
     rm -rf $HDF4_VER
 fi
@@ -318,7 +330,7 @@ if [ ! -f /usr/local/lib/libhdf5.settings ]; then
         ./configure --disable-static --enable-shared --disable-fortran --enable-hl --disable-fortran --prefix=/usr/local
     fi
 
-    make install
+    make install -j 2
     popd
     rm -rf $HDF5_VER
 fi
@@ -355,15 +367,16 @@ if [ ! -f /home/vagrant/local2/lib/libnetcdf.settings ]; then
     cd build
 
     if [ "x$ISPAR" = "xTRUE" ]; then
-        cmake .. -DCMAKE_INSTALL_PREFIX=/home/vagrant/local2 -DENABLE_TESTS=OFF -DENABLE_PARALLEL=ON -DCMAKE_BUILD_TYPE="Release" -DCMAKE_C_COMPILER=`which mpicc`
+        /usr/local/bin/cmake .. -DCMAKE_INSTALL_PREFIX=/home/vagrant/local2 -DENABLE_TESTS=OFF -DENABLE_PARALLEL=ON -DCMAKE_BUILD_TYPE="Release" -DCMAKE_C_COMPILER=`which mpicc`
     else
-        cmake .. -DCMAKE_INSTALL_PREFIX=/home/vagrant/local2 -DENABLE_TESTS=OFF -DCMAKE_BUILD_TYPE="Release"
+        /usr/local/bin/cmake .. -DCMAKE_INSTALL_PREFIX=/home/vagrant/local2 -DENABLE_TESTS=OFF -DCMAKE_BUILD_TYPE="Release"
     fi
-    make
+    make -j 2
     make install
     popd
     rm -rf netcdf-c/
 fi
+# End netcdf install
 
 
 chown -R vagrant:vagrant /home/vagrant
