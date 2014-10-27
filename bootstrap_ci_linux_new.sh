@@ -312,7 +312,7 @@ fi
 if [ ! -f /usr/local/lib/libhdf5.settings ]; then
     HDF5_FILE="$HDF5_VER".tar.bz2
     if [ ! -f "/vagrant/$HDF5_FILE" ]; then
-	    wget http://www.hdfgroup.org/ftp/HDF5/current/src/$HDF5_FILE
+	    wget http://www.hdfgroup.org/ftp/HDF5/releases/$HDF5_VER/src/$HDF5_FILE
 	    cp "$HDF5_FILE" /vagrant
     else
 	    cp "/vagrant/$HDF5_FILE" .

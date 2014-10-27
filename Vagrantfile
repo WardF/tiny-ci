@@ -185,6 +185,20 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
   end
 
+config.vm.define "cent_openmpi" do |v|
+    v.vm.provision :shell, :path => "bootstrap_ci_linux_new.sh", :args => "-l centos -p openmpi -a 1.8.12"
+    v.vm.box = "ubuntu/trusty64"
+    v.vm.hostname = "testopenmpi"
+
+    v.vm.provider "virtualbox" do |vb|
+      vb.customize [
+                    "modifyvm", :id,
+                    "--memory", "1024",
+                    "--cpus", "4"
+                   ]
+    end
+  end
+
   config.vm.define "t64_openmpi" do |v|
     v.vm.provision :shell, :path => "bootstrap_ci_linux_new.sh", :args => "-l ubuntu -p openmpi"
     v.vm.box = "ubuntu/trusty64"
