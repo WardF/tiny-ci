@@ -291,7 +291,7 @@ if [ ! -f /usr/local/bin/cmake ]; then
 fi
 
 # Install hdf4 from source.
-if [ ! -f /usr/local/lib/libhdf4.settings ]; then
+if [ ! -f /usr/lib/libhdf4.settings ]; then
     HDF4_FILE="$HDF4_VER".tar.bz2
     if [ ! -f "/vagrant/$HDF4_FILE" ]; then
 	wget http://www.hdfgroup.org/ftp/HDF/HDF_Current/src/$HDF4_FILE
@@ -302,14 +302,14 @@ if [ ! -f /usr/local/lib/libhdf4.settings ]; then
 
     tar -jxf $HDF4_FILE
     pushd $HDF4_VER
-    ./configure --disable-static --enable-shared --disable-netcdf --disable-fortran --prefix=/usr/local
+    ./configure --disable-static --enable-shared --disable-netcdf --disable-fortran --prefix=/usr
     sudo make install -j 2
     popd
     rm -rf $HDF4_VER
 fi
 
 # Install hdf5 from source
-if [ ! -f /usr/local/lib/libhdf5.settings ]; then
+if [ ! -f /usr/lib/libhdf5.settings ]; then
     HDF5_FILE="$HDF5_VER".tar.bz2
     if [ ! -f "/vagrant/$HDF5_FILE" ]; then
 	    wget http://www.hdfgroup.org/ftp/HDF5/releases/$HDF5_VER/src/$HDF5_FILE
@@ -325,9 +325,9 @@ if [ ! -f /usr/local/lib/libhdf5.settings ]; then
     # If ISPAR is true, but PARTYPE is pnet, then we want
     # to build with mpicc, but disable native parallel.
     if [ "x$ISPAR" = "xTRUE" ]; then
-        CC=`which mpicc` ./configure --enable-shared --disable-static --disable-fortran --enable-hl --disable-fortran --enable-parallel --prefix=/usr/local
+        CC=`which mpicc` ./configure --enable-shared --disable-static --disable-fortran --enable-hl --disable-fortran --enable-parallel --prefix=/usr
     else
-        ./configure --disable-static --enable-shared --disable-fortran --enable-hl --disable-fortran --prefix=/usr/local
+        ./configure --disable-static --enable-shared --disable-fortran --enable-hl --disable-fortran --prefix=/usr
     fi
 
     make install -j 2
@@ -337,7 +337,7 @@ fi
 
 
 if [ "x$PARTYPE" = "pnet" ]; then
-    if [ ! -f /usr/local/lib/libpnetcdf.a ]; then
+    if [ ! -f /usr/lib/libpnetcdf.a ]; then
         PNET_FILE="$PNET_VER.tar.bz2"
         if [ ! -f "/vagrant/$PNET_FILE" ]; then
             wget http://cucis.ece.northwestern.edu/projects/PnetCDF/Release/$PNET_FILE
@@ -348,7 +348,7 @@ if [ "x$PARTYPE" = "pnet" ]; then
 
         tar -jxf $PNET_FILE
         pushd $PNET_VER
-        CPPFLAGS="-fPIC" CC=`which mpicc` ./configure --prefix=/usr/local
+        CPPFLAGS="-fPIC" CC=`which mpicc` ./configure --prefix=/usr
         make -k install
         popd
         rm -rf $PNET_VER
@@ -363,13 +363,17 @@ fi
 if [ ! -f /home/vagrant/local2/lib/libnetcdf.settings ]; then
     git clone git://github.com/Unidata/netcdf-c
     pushd netcdf-c
-    mkdir build
-    cd build
+    autoreconf -if
+    #mkdir build
+    #cd build
 
     if [ "x$ISPAR" = "xTRUE" ]; then
-        /usr/local/bin/cmake .. -DCMAKE_INSTALL_PREFIX=/home/vagrant/local2 -DENABLE_TESTS=OFF -DENABLE_PARALLEL=ON -DCMAKE_BUILD_TYPE="Release" -DCMAKE_C_COMPILER=`which mpicc`
+        #/usr/local/bin/cmake .. -DCMAKE_INSTALL_PREFIX=/home/vagrant/local2 -DENABLE_TESTS=OFF -DENABLE_PARALLEL=ON -DCMAKE_C_COMPILER=`which mpicc` -DCMAKE_C_FLAGS="-O2"
+        CC=mpicc CFLAGS="-O2" ./configure --prefix=/home/vagrant/local2
     else
-        /usr/local/bin/cmake .. -DCMAKE_INSTALL_PREFIX=/home/vagrant/local2 -DENABLE_TESTS=OFF -DCMAKE_BUILD_TYPE="Release"
+        #/usr/local/bin/cmake .. -DCMAKE_INSTALL_PREFIX=/home/vagrant/local2 -DENABLE_TESTS=OFF -DCMAKE_C_FLAGS="-O2"
+        ./configure --prefix=/home/vagrant/local2
+
     fi
     make -j 2
     make install
@@ -377,7 +381,6 @@ if [ ! -f /home/vagrant/local2/lib/libnetcdf.settings ]; then
     rm -rf netcdf-c/
 fi
 # End netcdf install
-
 
 chown -R vagrant:vagrant /home/vagrant
 sudo -i -u vagrant $CTEST_INIT
