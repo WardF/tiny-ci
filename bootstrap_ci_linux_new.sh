@@ -127,9 +127,11 @@ fi
 ###
 # Centos
 ###
+USE_PROFILED=""
 if [ "$LINTYPE" = "centos" ]; then
     USE_YUM="TRUE"
     PKG_UPDATE=""
+    USE_PROFILED="TRUE"
     PKG_CMD=`which yum`
     GRP_LIST="yum -y groupinstall Development tools"
 
@@ -148,6 +150,22 @@ if [ "$LINTYPE" = "centos" ]; then
     fi
 
 fi
+
+###
+# Centos systems require an entry in
+# /etc/profile.d/ to set ld_library_path.
+###
+if [ "x$USE_PROFILED" = "xTRUE" ]; then
+
+    PDFILE="/etc/profile.d/ldlibpath.sh"
+    if [ ! -f "$PDFILE" ]; then
+        echo '# ld_library_path init script' > $PDFILE
+        echo 'export LD_LIBRARY_PATH=/usr/lib:$LD_LIBRARY_PATH' >> $PDFILE
+        echo 'export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH' >> $PDFILE
+    fi
+
+fi
+
 
 ###
 # Update, Upgrade system. Then install the appropriate packages.

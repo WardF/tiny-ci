@@ -61,7 +61,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.define "t64" do |v|
     v.vm.provision :shell, :path => "bootstrap_ci_linux_new.sh", :args => "-l ubuntu"
     v.vm.box = "ubuntu/trusty64"
-
+    v.vm.hostname = "t64"
     v.vm.provider "virtualbox" do |vb|
       vb.customize [
                     "modifyvm", :id,
@@ -88,6 +88,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.define "t32" do |v|
     v.vm.provision :shell, :path => "bootstrap_ci_linux_new.sh", :args => "-l ubuntu"
     v.vm.box = "ubuntu/trusty32"
+    v.vm.hostname = "t32"
   end
 
   config.vm.define "t32_big" do |v|
@@ -107,11 +108,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.define "s64" do |v|
     v.vm.provision :shell, :path => "bootstrap_ci_linux_new.sh", :args => "-l ubuntu"
     v.vm.box = "saucy64"
+    v.vm.hostname = "s64"
   end
 
   config.vm.define "s32" do |v|
     v.vm.provision :shell, :path => "bootstrap_ci_linux_new.sh", :args => "-l ubuntu"
     v.vm.box = "saucy32"
+    v.vm.hostname = "s32"
   end
 
   config.vm.define "p64" do |v|
@@ -150,14 +153,22 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Start CentOS Boxes
   ######
 
+  config.vm.define "test_cent" do |v|
+    v.vm.provision :shell, :path => "bootstrap_ci_linux_new.sh", :args => "-l centos"
+    v.vm.box = "nrel/CentOS-6.5-x86_64"
+    v.vm.hostname = "cent64"
+  end
+
   config.vm.define "cent64" do |v|
     v.vm.provision :shell, :path => "bootstrap_ci_linux_new.sh", :args => "-l centos"
-    v.vm.box = "centos64"
+    v.vm.box = "nrel/CentOS-6.5-x86_64"
+    v.vm.hostname = "cent64"
   end
 
   config.vm.define "cent32" do |v|
     v.vm.provision :shell, :path => "bootstrap_ci_linux_new.sh", :args => "-l centos"
-    v.vm.box = "centos32"
+    v.vm.box = "nrel/CentOS-6.5-i386"
+    v.vm.hostname = "cent32"
   end
 
   ######
@@ -202,7 +213,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
 config.vm.define "cent_openmpi" do |v|
     v.vm.provision :shell, :path => "bootstrap_ci_linux_new.sh", :args => "-l centos -p openmpi -a 1.8.12"
-    v.vm.box = "ubuntu/trusty64"
+    v.vm.box = "centos64"
     v.vm.hostname = "testopenmpi"
 
     v.vm.provider "virtualbox" do |vb|
