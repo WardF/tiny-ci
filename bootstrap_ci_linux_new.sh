@@ -14,6 +14,7 @@ dohelp ()
     echo -e "\t-l [distro]  Linux Distribution."
     echo -e "\t               o ubuntu"
     echo -e "\t               o centos"
+    echo -e "\t               o debian"
     echo -e "\t-p [type]    Parallel Processing Type"
     echo -e "\t               o openmpi"
     echo -e "\t               o mpich"
@@ -73,6 +74,8 @@ case ${LINTYPE} in
         ;;
     centos)
         ;;
+    debian)
+        ;;
     *)
         echo "Error: Unknown linux type."
         dohelp
@@ -99,9 +102,9 @@ fi
 #####
 
 ###
-# Ubuntu Linux
+# Ubuntu, Debian Linux
 ###
-if [ "$LINTYPE" = "ubuntu" ]; then
+if [ "$LINTYPE" = "ubuntu" ] || [ "$LINTYPE" = "debian" ]; then
     USE_APT="TRUE"
     PKG_CMD=`which apt-get`
     PKG_UPDATE="$PKG_CMD update"
