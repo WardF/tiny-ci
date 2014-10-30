@@ -33,7 +33,6 @@ LINTYPE=""
 PARTYPE=""
 ISPAR=""
 DOCRON=""
-
 CIFILE="CI.cmake"
 FCIFILE="FCI.cmake"
 HDF5VER="1.8.13"
@@ -183,10 +182,15 @@ set +x
 #####
 # Enable Cron to run automatically.
 #####
-if [ `which update-rc.d | wc -w` -gt 0 ]; then
-    update-rc.d crond defaults
-elif [ `which chkconfig | wc -w` -gt 0 ]; then
-    chkconfig crond on
+
+CRONLOCKFILE="/home/vagrant/.cronlock"
+
+if [ ! -f "$CRONLOCKFILE" ]; then
+    if [ `which update-rc.d | wc -w` -gt 0 ]; then
+        update-rc.d crond defaults
+    elif [ `which chkconfig | wc -w` -gt 0 ]; then
+        chkconfig crond on
+    fi
 fi
 
 #####
@@ -243,6 +247,7 @@ echo ' cd /home/vagrant/ctest_scripts/' >> $CTEST_INIT
 if [ "x$ISPAR" = "xTRUE" ]; then
     echo ' /usr/local/bin/ctest -V -S PARCI.cmake > ccontinuous_test.out 2>&1 &' >> $CTEST_INIT
     echo ' /usr/local/bin/ctest -V -S FPARCI.cmake > fcontinuous_test.out 2>&1 &' >> $CTEST_INIT
+
 else
     echo ' /usr/local/bin/ctest -V -S CI.cmake > ccontinuous_test.out 2>&1 &' >> $CTEST_INIT
     echo ' /usr/local/bin/ctest -V -S FCI.cmake > fcontinuous_test.out 2>&1 &' >> $CTEST_INIT
@@ -258,29 +263,30 @@ chmod 755 $CTEST_INIT
 # haven't been installed yet.
 ####
 
-CRONLOCKFILE="/home/vagrant/.cronlock"
 if [ "x$DOCRON" = "xTRUE" ]; then
     if [ ! -f $CRONLOCKFILE ]; then
         ### Install a crontab for running nightly tests.
         sudo -i -u vagrant echo "@reboot $CTEST_INIT" > /home/vagrant/crontab.in
 
-    ### Install a crontab for running nightly tests.
-    sudo -i -u vagrant echo "@reboot $CTEST_INIT" > /home/vagrant/crontab.in
+        ### Install a crontab for running nightly tests.
+        sudo -i -u vagrant echo "@reboot $CTEST_INIT" > /home/vagrant/crontab.in
+        ### Set the LD_LIBRARY_PATH
+        sudo -i -u vagrant echo "" >> /home/vagrant/crontab.in
+        sudo -i -u vagrant echo 'LD_LIBRARY_PATH=/usr/lib:/usr/local/lib:/home/vagrant/local2' >> /home/vagrant/crontab.in
+        sudo -i -u vagrant echo "" >> /home/vagrant/crontab.in
 
-    # If it's a parallel build, we have to pass 'par' to the nightly test script.
-
-    if [ "x$ISPAR" = "xTRUE" ]; then
-        sudo -i -u vagrant echo '01 0 * * * cd /home/vagrant/ctest_scripts && /home/vagrant/ctest_scripts/run_nightly_test.sh -p -l netcdf-c > nightly_log_c.txt' >> /home/vagrant/crontab.in
-        sudo -i -u vagrant echo '01 1  * * * cd /home/vagrant/ctest_scripts && /home/vagrant/ctest_scripts/run_nightly_test.sh -p -l netcdf-fortran > nightly_log_fortran.txt' >> /home/vagrant/crontab.in
-    else
-        sudo -i -u vagrant echo '01 0 * * * cd /home/vagrant/ctest_scripts && /home/vagrant/ctest_scripts/run_nightly_test.sh -l netcdf-c > nightly_log_c.txt' >> /home/vagrant/crontab.in
-        sudo -i -u vagrant echo '01 1 * * * cd /home/vagrant/ctest_scripts && /home/vagrant/ctest_scripts/run_nightly_test.sh -l netcdf-fortran > nightly_log_fortran.txt' >> /home/vagrant/crontab.in
+        # If it's a parallel build, we have to pass 'par' to the nightly test script.
+        if [ "x$ISPAR" = "xTRUE" ]; then
+            sudo -i -u vagrant echo '01 0 * * * cd /home/vagrant/ctest_scripts && /home/vagrant/ctest_scripts/run_nightly_test.sh -p -l netcdf-c > nightly_log_c.txt' >> /home/vagrant/crontab.in
+            sudo -i -u vagrant echo '01 1  * * * cd /home/vagrant/ctest_scripts && /home/vagrant/ctest_scripts/run_nightly_test.sh -p -l netcdf-fortran > nightly_log_fortran.txt' >> /home/vagrant/crontab.in
+        else
+            sudo -i -u vagrant echo '01 0 * * * cd /home/vagrant/ctest_scripts && /home/vagrant/ctest_scripts/run_nightly_test.sh -l netcdf-c > nightly_log_c.txt' >> /home/vagrant/crontab.in
+            sudo -i -u vagrant echo '01 1 * * * cd /home/vagrant/ctest_scripts && /home/vagrant/ctest_scripts/run_nightly_test.sh -l netcdf-fortran > nightly_log_fortran.txt' >> /home/vagrant/crontab.in
+        fi
+        sudo -i -u vagrant crontab < /home/vagrant/crontab.in
+        mv /home/vagrant/crontab.in $CRONLOCKFILE
     fi
-fi
 
-
-    sudo -i -u vagrant crontab < /home/vagrant/crontab.in
-    rm /home/vagrant/crontab.in
 fi
 #end check for cron
 
@@ -342,6 +348,7 @@ if [ ! -f /usr/lib/libhdf5.settings ]; then
     tar -jxf $HDF5_FILE
     pushd $HDF5_VER
 
+
     # This will get a little complicated.
     # If ISPAR is true, but PARTYPE is pnet, then we want
     # to build with mpicc, but disable native parallel.
@@ -355,8 +362,6 @@ if [ ! -f /usr/lib/libhdf5.settings ]; then
     popd
     rm -rf $HDF5_VER
 fi
-
-
 if [ "x$PARTYPE" = "pnet" ]; then
     if [ ! -f /usr/lib/libpnetcdf.a ]; then
         PNET_FILE="$PNET_VER.tar.bz2"
@@ -376,7 +381,6 @@ if [ "x$PARTYPE" = "pnet" ]; then
     fi
 fi
 
-
 ##
 # In order to do netcdf-fortran testing, we need to
 # install netcdf-c in an out-of-the-way place.
@@ -394,13 +398,13 @@ if [ ! -f /home/vagrant/local2/lib/libnetcdf.settings ]; then
     else
         #/usr/local/bin/cmake .. -DCMAKE_INSTALL_PREFIX=/home/vagrant/local2 -DENABLE_TESTS=OFF -DCMAKE_C_FLAGS="-O2"
         ./configure --prefix=/home/vagrant/local2
-
     fi
     make -j 2
     make install
     popd
     rm -rf netcdf-c/
 fi
+
 # End netcdf install
 
 chown -R vagrant:vagrant /home/vagrant
