@@ -109,7 +109,7 @@ if [ "$LINTYPE" = "ubuntu" ] || [ "$LINTYPE" = "debian" ]; then
     PKG_UPDATE="$PKG_CMD update"
     GRP_LIST=""
 
-    PKG_LIST="ubuntu-dev-tools m4 git libjpeg-dev libcurl4-openssl-dev wget htop libtool bison flex autoconf curl g++ midori emacs valgrind gfortran"
+    PKG_LIST="ubuntu-dev-tools m4 git libjpeg-dev libcurl4-openssl-dev wget htop libtool bison flex autoconf curl g++ midori emacs valgrind gfortran zlib1g-dev"
 
     if [ "x$ISPAR" = "xTRUE" ]; then
         case ${PARTYPE} in
