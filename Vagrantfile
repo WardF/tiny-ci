@@ -45,64 +45,58 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Ubuntu Boxes
   ######
 
-  # Using a pre-built, pre-provisioned image.
-  config.vm.define "prebuilt_t64" do |v|
-    v.vm.box = "nc_t64"
-    v.vm.hostname = "nct64"
+  config.vm.define "u64" do |v|
+    v.vm.provision :shell, :path => "bootstrap_ci_linux.sh", :args => "-l ubuntu"
+    v.vm.box = "larryli/utopic64"
+    v.vm.hostname = "u64"
 
   end
 
-  config.vm.define "prebuilt_t32" do |v|
-    v.vm.box = "nc_t32"
-    v.vm.hostname = "nct32"
+  config.vm.define "u64_big" do |v|
+    v.vm.provision :shell, :path => "bootstrap_ci_linux.sh", :args => "-l ubuntu"
+    v.vm.box = "larryli/utopic64"
+    v.vm.hostname = "bigu64"
 
+    v.vm.provider "virtualbox" do |vb|
+      vb.customize [
+                    "modifyvm", :id,
+                    "--memory", "4096",
+                    "--cpus", "2"
+                   ]
+    end
+  end
+
+  config.vm.define "u32" do |v|
+    v.vm.provision :shell, :path => "bootstrap_ci_linux.sh", :args => "-l ubuntu"
+    v.vm.box = "larryli/utopic32"
+    v.vm.hostname = "u32"
+  end
+
+  config.vm.define "u32_big" do |v|
+    v.vm.provision :shell, :path => "bootstrap_ci_linux.sh", :args => "-l ubuntu"
+    v.vm.box = "larryli/utopic32"
+    v.vm.hostname = "bigu32"
+
+    v.vm.provider "virtualbox" do |vb|
+      vb.customize [
+                    "modifyvm", :id,
+                    "--memory", "4096",
+                    "--cpus", "2"
+                   ]
+    end
   end
 
   config.vm.define "t64" do |v|
     v.vm.provision :shell, :path => "bootstrap_ci_linux.sh", :args => "-l ubuntu"
     v.vm.box = "ubuntu/trusty64"
     v.vm.hostname = "t64"
-    v.vm.provider "virtualbox" do |vb|
-      vb.customize [
-                    "modifyvm", :id,
-                    "--memory", "4096",
-                    "--cpus", "2"
-                   ]
-    end
-  end
 
-  config.vm.define "t64_big" do |v|
-    v.vm.provision :shell, :path => "bootstrap_ci_linux.sh", :args => "-l ubuntu"
-    v.vm.box = "ubuntu/trusty64"
-    v.vm.hostname = "bigt64"
-
-    v.vm.provider "virtualbox" do |vb|
-      vb.customize [
-                    "modifyvm", :id,
-                    "--memory", "4096",
-                    "--cpus", "2"
-                   ]
-    end
   end
 
   config.vm.define "t32" do |v|
     v.vm.provision :shell, :path => "bootstrap_ci_linux.sh", :args => "-l ubuntu"
     v.vm.box = "ubuntu/trusty32"
     v.vm.hostname = "t32"
-  end
-
-  config.vm.define "t32_big" do |v|
-    v.vm.provision :shell, :path => "bootstrap_ci_linux.sh", :args => "-l ubuntu"
-    v.vm.box = "ubuntu/trusty32"
-    v.vm.hostname = "bigt32"
-
-    v.vm.provider "virtualbox" do |vb|
-      vb.customize [
-                    "modifyvm", :id,
-                    "--memory", "4096",
-                    "--cpus", "2"
-                   ]
-    end
   end
 
   config.vm.define "s64" do |v|
@@ -153,12 +147,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Start CentOS Boxes
   ######
 
-  config.vm.define "test_cent" do |v|
-    v.vm.provision :shell, :path => "bootstrap_ci_linux.sh", :args => "-l centos"
-    v.vm.box = "nrel/CentOS-6.5-x86_64"
-    v.vm.hostname = "cent64"
-  end
-
   config.vm.define "cent64" do |v|
     v.vm.provision :shell, :path => "bootstrap_ci_linux.sh", :args => "-l centos"
     v.vm.box = "nrel/CentOS-6.5-x86_64"
@@ -179,51 +167,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Ubuntu Boxes for HDF5 Parallel Tests
   # Use MPICH and OPENMPI configurations.
   ######
-
-  config.vm.define "test_mpich" do |v|
-    v.vm.provision :shell, :path => "bootstrap_ci_linux.sh", :args => "-l ubuntu -p mpich"
-    v.vm.box = "ubuntu/trusty64"
-    v.vm.hostname = "testmpich"
-
-    v.vm.provider "virtualbox" do |vb|
-      vb.customize [
-                    "modifyvm", :id,
-                    "--memory", "1024",
-                    "--cpus", "4"
-                   ]
-    end
-  end
-
-
-  # OpenMPI configurations
-
-  config.vm.define "test_openmpi" do |v|
-    v.vm.provision :shell, :path => "bootstrap_ci_linux.sh", :args => "-l ubuntu -p openmpi"
-    v.vm.box = "ubuntu/trusty64"
-    v.vm.hostname = "testopenmpi"
-
-    v.vm.provider "virtualbox" do |vb|
-      vb.customize [
-                    "modifyvm", :id,
-                    "--memory", "1024",
-                    "--cpus", "4"
-                   ]
-    end
-  end
-
-config.vm.define "cent_openmpi" do |v|
-    v.vm.provision :shell, :path => "bootstrap_ci_linux.sh", :args => "-l centos -p openmpi -a 1.8.12"
-    v.vm.box = "centos64"
-    v.vm.hostname = "testopenmpi"
-
-    v.vm.provider "virtualbox" do |vb|
-      vb.customize [
-                    "modifyvm", :id,
-                    "--memory", "1024",
-                    "--cpus", "4"
-                   ]
-    end
-  end
 
   config.vm.define "t64_openmpi" do |v|
     v.vm.provision :shell, :path => "bootstrap_ci_linux.sh", :args => "-l ubuntu -p openmpi"
@@ -321,46 +264,6 @@ config.vm.define "cent_openmpi" do |v|
   # End Ubuntu Boxes for pnetcdf Parallel Tests
   ######
 
-  ######
-  # Plain ubuntu box.
-  ######
-
-  config.vm.define "plain", primary: true do |v|
-    v.vm.box = "ubuntu/trusty64"
-    v.vm.hostname = "plain"
-
-    v.vm.provider "virtualbox" do |vb|
-      vb.customize [
-                    "modifyvm", :id,
-                    "--memory", "512"
-                   ]
-    end
-  end
-
-  # Pre-built developer boxes, without ctest infrastructure.
-  config.vm.define "dev64" do |v|
-    v.vm.box = "wf_dev64"
-    v.vm.hostname = "dev64"
-    v.vm.provider "virtualbox" do |vb|
-      vb.customize [
-                    "modifyvm", :id,
-                    "--memory", "2048",
-                    "--cpus", "2"
-                   ]
-    end
-  end
-
-  config.vm.define "dev32" do |v|
-    v.vm.box = "wf_dev32"
-    v.vm.hostname = "dev32"
-    v.vm.provider "virtualbox" do |vb|
-      vb.customize [
-                    "modifyvm", :id,
-                    "--memory", "2048",
-                    "--cpus", "2"
-                   ]
-    end
-  end
 
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
