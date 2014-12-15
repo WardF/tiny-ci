@@ -265,14 +265,14 @@ chmod 755 $CTEST_INIT
 
 if [ "x$DOCRON" = "xTRUE" ]; then
     if [ ! -f $CRONLOCKFILE ]; then
-        ### Install a crontab for running nightly tests.
-        sudo -i -u vagrant echo "@reboot $CTEST_INIT" > /home/vagrant/crontab.in
+
+        ### Set the LD_LIBRARY_PATH, just in case it's needed.
+        sudo -i -u vagrant echo 'LD_LIBRARY_PATH=/usr/lib:/usr/local/lib:/home/vagrant/local2' > /home/vagrant/crontab.in
 
         ### Install a crontab for running nightly tests.
-        sudo -i -u vagrant echo "@reboot $CTEST_INIT" > /home/vagrant/crontab.in
+        sudo -i -u vagrant echo "@reboot $CTEST_INIT" >> /home/vagrant/crontab.in
         ### Set the LD_LIBRARY_PATH
         sudo -i -u vagrant echo "" >> /home/vagrant/crontab.in
-        sudo -i -u vagrant echo 'LD_LIBRARY_PATH=/usr/lib:/usr/local/lib:/home/vagrant/local2' >> /home/vagrant/crontab.in
         sudo -i -u vagrant echo "" >> /home/vagrant/crontab.in
 
         # If it's a parallel build, we have to pass 'par' to the nightly test script.
