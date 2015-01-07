@@ -295,7 +295,7 @@ fi
 # * hdf4
 # * hdf5
 
-CMAKE_VER="cmake-3.0.2"
+CMAKE_VER="cmake-3.1.0"
 HDF4_VER="hdf-4.2.10"
 HDF5_VER="hdf5-$HDF5VER"
 
@@ -303,7 +303,7 @@ HDF5_VER="hdf5-$HDF5VER"
 if [ ! -f /usr/local/bin/cmake ]; then
     CMAKE_FILE="$CMAKE_VER".tar.gz
     if [ ! -f "/vagrant/$CMAKE_FILE" ]; then
-	    wget http://www.cmake.org/files/v3.0/$CMAKE_FILE
+	    wget http://www.cmake.org/files/v3.1/$CMAKE_FILE
 	    cp "$CMAKE_FILE" /vagrant
     else
 	    cp "/vagrant/$CMAKE_FILE" .
