@@ -15,6 +15,7 @@ dohelp ()
     echo -e "\t               o ubuntu"
     echo -e "\t               o centos"
     echo -e "\t               o debian"
+    echo -e "\t               o fedora"
     echo -e "\t-p [type]    Parallel Processing Type"
     echo -e "\t               o openmpi"
     echo -e "\t               o mpich"
@@ -68,12 +69,16 @@ while getopts "l:p:ca:" o; do
     esac
 done
 
+# Validate linux types, do any distro-specific config
 case ${LINTYPE} in
     ubuntu)
         ;;
     centos)
         ;;
     debian)
+        ;;
+    fedora)
+        sed -i 's/^Defaults    requiretty/# Defaults requiretty/g' /etc/sudoers
         ;;
     *)
         echo "Error: Unknown linux type."
@@ -123,6 +128,9 @@ if [ "$LINTYPE" = "ubuntu" ] || [ "$LINTYPE" = "debian" ]; then
                 ;;
         esac
     fi
+    $PKG_CMD update
+    $PKG_CMD -y upgrade
+    $PKG_CMD -y install $PKG_LIST
 fi
 
 
@@ -130,14 +138,19 @@ fi
 # Centos
 ###
 USE_PROFILED=""
-if [ "$LINTYPE" = "centos" ]; then
+if [ "$LINTYPE" = "centos" ] || [ "$LINTYPE" = "fedora" ]; then
     USE_YUM="TRUE"
     PKG_UPDATE=""
     USE_PROFILED="TRUE"
     PKG_CMD=`which yum`
     GRP_LIST="yum -y groupinstall Development tools"
+    YM_FORTRAN="gfortran"
 
-    PKG_LIST="m4 git libjpeg-turbo-devel libcurl-devel wget nano libtool bison flex autoconf curl gfortran"
+    if [ "$LINTYPE" = "fedora" ]; then
+        YM_FORTRAN="gcc-gfortran"
+    fi
+
+    PKG_LIST="m4 git libjpeg-turbo-devel libcurl-devel wget nano libtool bison flex autoconf curl zlib-devel $YM_FORTRAN"
     if [ "x$ISPAR" = "xTRUE" ]; then
         case ${PARTYPE} in
             mpich)
@@ -151,6 +164,9 @@ if [ "$LINTYPE" = "centos" ]; then
         esac
     fi
 
+    $PKG_CMD -y update
+    $PKG_CMD -y install $PKG_LIST
+    bash -c "$GRP_LIST"
 fi
 
 ###
@@ -168,16 +184,6 @@ if [ "x$USE_PROFILED" = "xTRUE" ]; then
 
 fi
 
-
-###
-# Update, Upgrade system. Then install the appropriate packages.
-###
-$PKG_CMD -y update
-$PKG_CMD -y upgrade
-$PKG_CMD -y install $PKG_LIST
-set -x
-bash -c "$GRP_LIST"
-set +x
 
 #####
 # Enable Cron to run automatically.
@@ -266,25 +272,27 @@ chmod 755 $CTEST_INIT
 if [ "x$DOCRON" = "xTRUE" ]; then
     if [ ! -f $CRONLOCKFILE ]; then
 
-        ### Set the LD_LIBRARY_PATH, just in case it's needed.
-        sudo -i -u vagrant echo 'LD_LIBRARY_PATH=/usr/lib:/usr/local/lib:/home/vagrant/local2' > /home/vagrant/crontab.in
+       ### Set the LD_LIBRARY_PATH
+        sudo -i -u vagrant echo "" > /home/vagrant/crontab.in
+        sudo -i -u vagrant echo 'CRON_TZ="America/Denver"' >> /home/vagrant/crontab.in
+        sudo -i -u vagrant echo 'LD_LIBRARY_PATH=/usr/lib:/usr/local/lib:/home/vagrant/local2' >> /home/vagrant/crontab.in
+        sudo -i -u vagrant echo "" >> /home/vagrant/crontab.in
 
         ### Install a crontab for running nightly tests.
         sudo -i -u vagrant echo "@reboot $CTEST_INIT" >> /home/vagrant/crontab.in
-        ### Set the LD_LIBRARY_PATH
-        sudo -i -u vagrant echo "" >> /home/vagrant/crontab.in
-        sudo -i -u vagrant echo "" >> /home/vagrant/crontab.in
-
-        # If it's a parallel build, we have to pass 'par' to the nightly test script.
+         # If it's a parallel build, we have to pass 'par' to the nightly test script.
         if [ "x$ISPAR" = "xTRUE" ]; then
-            sudo -i -u vagrant echo '01 0 * * * cd /home/vagrant/ctest_scripts && /home/vagrant/ctest_scripts/run_nightly_test.sh -p -l netcdf-c > nightly_log_c.txt' >> /home/vagrant/crontab.in
-            sudo -i -u vagrant echo '01 1  * * * cd /home/vagrant/ctest_scripts && /home/vagrant/ctest_scripts/run_nightly_test.sh -p -l netcdf-fortran > nightly_log_fortran.txt' >> /home/vagrant/crontab.in
+            sudo -i -u vagrant echo '01 3 * * * cd /home/vagrant/ctest_scripts && /home/vagrant/ctest_scripts/run_nightly_test.sh -p -l netcdf-c > nightly_log_c.txt' >> /home/vagrant/crontab.in
+            sudo -i -u vagrant echo '01 4  * * * cd /home/vagrant/ctest_scripts && /home/vagrant/ctest_scripts/run_nightly_test.sh -p -l netcdf-fortran > nightly_log_fortran.txt' >> /home/vagrant/crontab.in
         else
-            sudo -i -u vagrant echo '01 0 * * * cd /home/vagrant/ctest_scripts && /home/vagrant/ctest_scripts/run_nightly_test.sh -l netcdf-c > nightly_log_c.txt' >> /home/vagrant/crontab.in
-            sudo -i -u vagrant echo '01 1 * * * cd /home/vagrant/ctest_scripts && /home/vagrant/ctest_scripts/run_nightly_test.sh -l netcdf-fortran > nightly_log_fortran.txt' >> /home/vagrant/crontab.in
+            sudo -i -u vagrant echo '01 3 * * * cd /home/vagrant/ctest_scripts && /home/vagrant/ctest_scripts/run_nightly_test.sh -l netcdf-c > nightly_log_c.txt' >> /home/vagrant/crontab.in
+            sudo -i -u vagrant echo '01 4 * * * cd /home/vagrant/ctest_scripts && /home/vagrant/ctest_scripts/run_nightly_test.sh -l netcdf-fortran > nightly_log_fortran.txt' >> /home/vagrant/crontab.in
         fi
         sudo -i -u vagrant crontab < /home/vagrant/crontab.in
         mv /home/vagrant/crontab.in $CRONLOCKFILE
+        # Restart crontab, see if that fixes the issue
+        # with jobs running at the wrong time.
+        /etc/init.d/cron restart
     fi
 
 fi
@@ -295,7 +303,7 @@ fi
 # * hdf4
 # * hdf5
 
-CMAKE_VER="cmake-3.1.1"
+CMAKE_VER="cmake-3.1.2"
 HDF4_VER="hdf-4.2.10"
 HDF5_VER="hdf5-$HDF5VER"
 
