@@ -30,7 +30,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.define "dash", primary: true do |v|
     v.vm.provision :shell, :path => "bootstrap_dashboard.sh"
     v.vm.network "private_network", ip: "10.1.2.10"
-    v.vm.box = "ubuntu/precise64"
+    v.vm.box = "precise64"
     v.vm.hostname = "dashboard"
 
     v.vm.provider "virtualbox" do |vb|
@@ -88,14 +88,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define "t64" do |v|
     v.vm.provision :shell, :path => "bootstrap_ci_linux.sh", :args => "-l ubuntu"
-    v.vm.box = "ubuntu/trusty64"
+    v.vm.box = "trusty64"
     v.vm.hostname = "t64"
 
   end
 
   config.vm.define "t32" do |v|
     v.vm.provision :shell, :path => "bootstrap_ci_linux.sh", :args => "-l ubuntu"
-    v.vm.box = "ubuntu/trusty32"
+    v.vm.box = "trusty32"
     v.vm.hostname = "t32"
   end
 
@@ -113,12 +113,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define "p64" do |v|
     v.vm.provision :shell, :path => "bootstrap_ci_linux.sh", :args => "-l ubuntu"
-    v.vm.box = "ubuntu/precise64"
+    v.vm.box = "precise64"
   end
 
   config.vm.define "p32" do |v|
     v.vm.provision :shell, :path => "bootstrap_ci.sh"
-    v.vm.box = "ubuntu/precise32"
+    v.vm.box = "precise32"
   end
 
   ######
@@ -170,7 +170,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define "t64_openmpi" do |v|
     v.vm.provision :shell, :path => "bootstrap_ci_linux.sh", :args => "-l ubuntu -p openmpi"
-    v.vm.box = "ubuntu/trusty64"
+    v.vm.box = "trusty64"
     v.vm.hostname = "t64openmpi"
 
     v.vm.provider "virtualbox" do |vb|
@@ -184,7 +184,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define "t32_openmpi" do |v|
     v.vm.provision :shell, :path => "bootstrap_ci_linux.sh", :args => "-l ubuntu -p openmpi"
-    v.vm.box = "ubuntu/trusty32"
+    v.vm.box = "trusty32"
     v.vm.hostname = "t32openmpi"
 
     v.vm.provider "virtualbox" do |vb|
@@ -200,7 +200,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define "t64_mpich" do |v|
     v.vm.provision :shell, :path => "bootstrap_ci_linux.sh", :args => "-l ubuntu -p mpich"
-    v.vm.box = "ubuntu/trusty64"
+    v.vm.box = "trusty64"
     v.vm.hostname = "t64mpich"
 
     v.vm.provider "virtualbox" do |vb|
@@ -214,7 +214,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define "t32_mpich" do |v|
     v.vm.provision :shell, :path => "bootstrap_ci_linux.sh", :args => "-l ubuntu -p mpich"
-    v.vm.box = "ubuntu/trusty32"
+    v.vm.box = "trusty32"
     v.vm.hostname = "t32mpich"
 
     v.vm.provider "virtualbox" do |vb|
@@ -235,7 +235,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   ######
   config.vm.define "t64_pnet" do |v|
     v.vm.provision :shell, :path => "bootstrap_pnet_ci.sh"
-    v.vm.box = "ubuntu/trusty64"
+    v.vm.box = "trusty64"
     v.vm.hostname = "t64pnet"
 
     v.vm.provider "virtualbox" do |vb|
@@ -249,7 +249,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define "t32_pnet" do |v|
     v.vm.provision :shell, :path => "bootstrap_pnet_ci.sh"
-    v.vm.box = "ubuntu/trusty32"
+    v.vm.box = "trusty32"
     v.vm.hostname = "t32pnet"
 
     v.vm.provider "virtualbox" do |vb|
