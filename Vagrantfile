@@ -164,6 +164,21 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   ######
 
   ######
+  # Start Scientific Linux Boxes
+  ######
+  config.vm.define "sl65-x86" do |v|
+    v.vm.provision :shell, :path => "bootstrap_ci_linux.sh", :args => "-l centos"
+    v.vm.box = "sl6.5-x86"
+    v.vm.hostname = "sl65-x64"
+  end
+
+  ######
+  # End Scientific Linux Boxes
+  ######
+
+
+
+  ######
   # Ubuntu Boxes for HDF5 Parallel Tests
   # Use MPICH and OPENMPI configurations.
   ######
