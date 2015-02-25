@@ -36,7 +36,7 @@ ISPAR=""
 DOCRON=""
 CIFILE="CI.cmake"
 FCIFILE="FCI.cmake"
-HDF5VER="1.8.14"
+HDF5VER="1.8.13"
 ####
 # Parse options, validate
 # arguments.
