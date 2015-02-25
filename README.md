@@ -1,6 +1,8 @@
 # Tiny-CI
 
-A Tiny, Self-Contained NetCDF-C Continuous Integration/Development Instance and Dashboard
+A Tiny, Self-Contained NetCDF-C Continuous Integration/Development Instance and Dashboard.  By using lock files (see [Suppressing Continuous Integration Testing](#suppress)).
+
+> See [Important Notes](#important_notes) at the bottom of the page for things to keep in mind when working with these VMs!
 
 # Overview
 
@@ -8,11 +10,49 @@ The VM's defined in the accompanying `Vagrantfile` are used for testing netcdf i
 
 ## Requirements
 
-* Vagrant
-* VM Software:
-	* VirtualBox
+* `Vagrant`: http://vagrantup.com
+* `Virtualbox`: http://virtualbox.org
 
-# Usage
+	> Note, you must also install the VirtualBox tools, available as a separate download on the same page as the VirtualBox download.
+
+
+### Optional Requirement
+
+In case you want to use Vagrant boxes Ward has built instead of cloud-based ones, they can be made available via `Bittorrent Sync`. See [Vagrant Boxes](#vagrant_boxes) for more information.
+
+* `Bittorrent Sync`: http://getsync.com
+	
+`Bittorrent Sync` is a distributed Dropbox-like service for private file syncing. I will provide a read-only Key upon request.  
+   
+
+### <a name="vagrant_boxes"></a> Vagrant Boxes
+
+Note that the vagrant config file, `Vagrantfile`, makes assumptions as to what Vagrant boxes are available on your system.  If you do not have any Vagrant boxes, there are two choices:
+
+1. Ask Ward to provide them.  They are available via `Bittorrent Sync`, and I will provide the read-only key most of the time.
+2. Replace the 'local' definitions with cloud-based ones.  You can make the substitutions for the main boxes as follows:
+
+Local Box | Cloud Equivalent
+----|----
+unicorn64 | bunchc/utopic-x64
+trusty64 | ubuntu/trusty64
+trusty32 | ubuntu/trusty32
+
+You would make the change in `Vagrantfile` as follows:
+
+~~~.bash
+v.vm.box = "trusty64"
+~~~
+
+becomes
+
+~~~.bash
+v.vm.box = "ubuntu/trusty64"
+~~~
+
+You can search for additional boxes at http://www.vagrantcloud.com, or talk to me (Ward). I've built a number of boxes from scratch, including many Ubuntu, CentOS, Fedora and Debian distributions.  
+
+# Using Tiny-CI for local Continuous Integration, Development
 
 In order for these VM's to run their CI scripts, the `netcdf-c/` and `netcdf-fortran/` directories must exist in the `tiny-ci/` directory.
 
@@ -20,26 +60,22 @@ In order for the VM's to run continuous integration, the relevant project direct
 
 * `netcdf-c/` - The netcdf-c project.
 * `netcdf-fortran/` - The netcdf-fortran project.
-* `netcdf-image/` - Ward's pilot project which may or may not go anywhere.
 
 Changes made to these local git repositories will be tested by the CI instances.
 
     Note: If you change branches in the repository on the host machine, you *must* restart the VM in order for the CI script to begin watching this new branch.
 
-## Suppressing Continuous Integration Testing
+## <a name="suppress"></a> Suppressing Continuous Integration Testing
 
 In the event that you want to use a VM for development or on-the-spot tests, instead of Continuous Integration testing, you would create the following files in the root `tiny-ci/` directory (`/vagrant/` on the VM).
 
 * `NOTEST` - Prevents any CI tests from running.
 * `NOTESTC` - Prevents CI tests for `netcdf-c` from running.
 * `NOTESTF` - Prevents CI tests for `netcdf-fortran` from running.
-* `NOTESTI` - Prevents CI tests for `netcdf-image` from running.
 
 Note: 
 
     These files may be created and deleted on-the-fly.  The CI script will run at boot, but it checks for the presence of these files before running any tests.  If they are present, no tests are run.
-
-
 
 ## Instantiate VM's
 
@@ -82,4 +118,8 @@ If you want to change branches in `netcdf-c` on the host machine, you will need 
 
 Note that every time you restart the CI instance, it will repeat the *initial* CI analysis, which may lead to multiple listings in the Dashboard. 
 
+## <a name="important_notes"></a>Important Notes
+
+* If a CI system is halted and then restarted, it will ***usually*** start the CI process on boot.  If not you'll need to log in and run the `/home/vagrant/ctest_service.sh` script manually.
+* For whatever reason, the `CDash` dashboard does not work properly if the VM is halted and restarted.  You must either ***suspend*** the VM, or destroy/create it as needed.
 
