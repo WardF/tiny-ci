@@ -47,14 +47,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define "u64" do |v|
     v.vm.provision :shell, :path => "bootstrap_ci_linux.sh", :args => "-l ubuntu"
-    v.vm.box = "larryli/utopic64"
+    v.vm.box = "unicorn64"
     v.vm.hostname = "u64"
 
   end
 
   config.vm.define "u64_big" do |v|
     v.vm.provision :shell, :path => "bootstrap_ci_linux.sh", :args => "-l ubuntu"
-    v.vm.box = "larryli/utopic64"
+    v.vm.box = "unicorn64"
     v.vm.hostname = "bigu64"
 
     v.vm.provider "virtualbox" do |vb|
@@ -68,13 +68,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define "u32" do |v|
     v.vm.provision :shell, :path => "bootstrap_ci_linux.sh", :args => "-l ubuntu"
-    v.vm.box = "larryli/utopic32"
+    v.vm.box = "unicorn32"
     v.vm.hostname = "u32"
   end
 
   config.vm.define "u32_big" do |v|
     v.vm.provision :shell, :path => "bootstrap_ci_linux.sh", :args => "-l ubuntu"
-    v.vm.box = "larryli/utopic32"
+    v.vm.box = "unicorn32"
     v.vm.hostname = "bigu32"
 
     v.vm.provider "virtualbox" do |vb|
