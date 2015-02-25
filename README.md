@@ -13,9 +13,19 @@ The VM's defined in the accompanying `Vagrantfile` are used for testing netcdf i
 * `Vagrant`: http://vagrantup.com
 * `Virtualbox`: http://virtualbox.org
 
-> Note, you must also install the VirtualBox tools, available as a separate download on the same page as the VirtualBox download.
+	> Note, you must also install the VirtualBox tools, available as a separate download on the same page as the VirtualBox download.
 
-### Vagrant Boxes
+
+### Optional Requirement
+
+In case you want to use Vagrant boxes Ward has built instead of cloud-based ones, they can be made available via `Bittorrent Sync`. See [Vagrant Boxes](#vagrant_boxes) for more information.
+
+* `Bittorrent Sync`: http://getsync.com
+	
+`Bittorrent Sync` is a distributed Dropbox-like service for private file syncing. I will provide a read-only Key upon request.  
+   
+
+### <a name="vagrant_boxes"></a> Vagrant Boxes
 
 Note that the vagrant config file, `Vagrantfile`, makes assumptions as to what Vagrant boxes are available on your system.  If you do not have any Vagrant boxes, there are two choices:
 
