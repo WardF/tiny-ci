@@ -24,6 +24,37 @@ In case you want to use Vagrant boxes Ward has built instead of cloud-based ones
 	
 `Bittorrent Sync` is a distributed Dropbox-like service for private file syncing. I will provide a read-only Key upon request.  
    
+## Vagrant
+
+Vagrant is a developer-centric command-line tool used to create, manage, and destroy project-based Virtual Machine (VM) instances.  Vagrant works around the concept of *boxes*, where a box is a base VM image.  The box, when instantiated, may then be *bootstrapped* via a script or provisioning system.  This is all controlled with the vagrant config file `Vagrantfile`, which is used to configure the VM instances available.
+
+### Example Usage
+
+List available configurations and get their status:
+
+    $ vagrant status
+    
+Create a new VM instance:
+
+    $ vagrant up [vm name]
+    
+Connect to a VM instance:
+
+    $ vagrant ssh [vm name]
+
+Suspend a VM instance:
+
+    $ vagrant suspend [vm name]
+    
+Halt a VM instance:
+
+    $ vagrant halt [vm name]
+    
+Destroy a VM instance:
+
+    $ vagrant destroy [vm name]
+    
+For more information see the **tutorial** at http://www.vagrantup.com.
 
 ### <a name="vagrant_boxes"></a> Vagrant Boxes
 
