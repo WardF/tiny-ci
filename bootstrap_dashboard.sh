@@ -90,4 +90,6 @@ if [ ! -d /vagrant/netcdf-c ]; then
     touch /vagrant/NOTESTF
 fi
 
+apache2ctl restart
+
 exit 0
