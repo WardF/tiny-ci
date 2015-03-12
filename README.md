@@ -116,6 +116,8 @@ Note:
 
 This will create a dashboard which may be accessed at http://10.1.2.10/CDash.
 
+> Note that, the first time you create a Dashboard without a pre-existing database template file, you will need to configure one yourself.  The first time you connect to the dashboard, connect directly to `http://10.1.2.10/CDash` and you will be automatically directed to the admin page, where you can set up a user and password.
+
 ### Default Credentials
 
 By default, the dashboard VM is on a local private network and is not exposed to the outside world.  As a result, there should not be a security issue. 
