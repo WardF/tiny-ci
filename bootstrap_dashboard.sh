@@ -8,7 +8,7 @@ apt-get update
 export DEBIAN_FRONTEND=noninteractive
 
 #apt-get -y upgrade
-apt-get -y -q install wget apache2 mysql-server php5 php5-mysql php5-xsl php5-curl php5-gd unzip subversion links git htop midori
+apt-get -y -q install apache2 mysql-server php5 php5-mysql php5-xsl php5-curl php5-gd unzip git htop
 
 #####
 # Set the proper timezone.
@@ -40,10 +40,7 @@ echo '?>' >> $HTMLDIR/info.php
 if [ ! -f $HTMLDIR/CDash ]; then
     # Stop mysql for the time being.
     # stop mysql
-
-    svn co --non-interactive --trust-server-cert https://www.kitware.com/svn/CDash/Release-2-2-2 CDash
-    # Start mysql back up.
-    # start mysql
+    git clone https://github.com/Kitware/CDash.git CDash
 
     # Configure MySQL
     # Add cdash database, user.
