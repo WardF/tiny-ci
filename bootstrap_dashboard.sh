@@ -13,8 +13,8 @@ apt-get -y -q install apache2 mysql-server php5 php5-mysql php5-xsl php5-curl ph
 #####
 # Set the proper timezone.
 #####
-echo "US/Mountain" | tee /etc/timezone
-dpkg-reconfigure --frontend noninteractive tzdata
+#echo "US/Mountain" | tee /etc/timezone
+#dpkg-reconfigure --frontend noninteractive tzdata
 
 #####
 # Install CDash, configure mysql
