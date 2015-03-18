@@ -304,7 +304,7 @@ fi
 # * hdf5
 
 CMAKE_VER="cmake-3.1.3"
-HDF4_VER="hdf-4.2.10"
+HDF4_VER="hdf-4.2.11"
 HDF5_VER="hdf5-$HDF5VER"
 
 # Install cmake from source
