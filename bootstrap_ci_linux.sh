@@ -1,4 +1,4 @@
-met#!/bin/bash
+#!/bin/bash
 
 set -u
 
