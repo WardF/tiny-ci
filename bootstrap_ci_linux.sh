@@ -1,4 +1,4 @@
-#!/bin/bash
+met#!/bin/bash
 
 set -u
 
@@ -36,7 +36,7 @@ ISPAR=""
 DOCRON=""
 CIFILE="CI.cmake"
 FCIFILE="FCI.cmake"
-HDF5VER="1.8.14"
+
 ####
 # Parse options, validate
 # arguments.
@@ -303,15 +303,17 @@ fi
 # * hdf4
 # * hdf5
 
-CMAKE_VER="cmake-3.1.3"
-HDF4_VER="hdf-4.2.10"
+CMAKE_VER="cmake-3.2.1"
+HDF4_VER="hdf-4.2.11"
+
+HDF5VER="1.8.14"
 HDF5_VER="hdf5-$HDF5VER"
 
 # Install cmake from source
 if [ ! -f /usr/local/bin/cmake ]; then
     CMAKE_FILE="$CMAKE_VER".tar.gz
     if [ ! -f "/vagrant/$CMAKE_FILE" ]; then
-	    wget http://www.cmake.org/files/v3.1/$CMAKE_FILE
+	    wget http://www.cmake.org/files/v3.2/$CMAKE_FILE
 	    cp "$CMAKE_FILE" /vagrant
     else
 	    cp "/vagrant/$CMAKE_FILE" .
