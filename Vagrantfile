@@ -24,6 +24,25 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   #####
+  # Include a GUI Ubuntu Desktop machine, for
+  # convenience.
+  #####
+
+  config.vm.define "trusty64-desktop" do |v|
+    v.vm.provision :shell, :path => "bootstrap_desktop.sh"
+    v.vm.box = "trusty-desktop-x64"
+    v.vm.hostname = "trustyx64"
+
+    v.vm.provider "virtualbox" do |vb|
+      vb.customize [
+        "modifyvm", :id,
+        "--memory", "1024"
+        "--cpus", "2"
+      ]
+    end
+  end
+
+  #####
   # Main CDash Dashboard.
   #####
 
