@@ -52,6 +52,24 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
   end
 
+
+  config.vm.define "dash32", primary: true do |v|
+    v.vm.provision :shell, :path => "bootstrap_dashboard.sh"
+    v.vm.network "private_network", ip: "10.1.2.10"
+    v.vm.box = "unicorn32"
+    v.vm.hostname = "dashboard32"
+
+    v.vm.provider "virtualbox" do |vb|
+      vb.customize [
+                    "modifyvm", :id,
+                    "--memory", "256"
+                   ]
+    end
+  end
+
+
+
+
   ######
   # Ubuntu Boxes
   ######
