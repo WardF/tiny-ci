@@ -3,6 +3,7 @@ netcdf-c
 netcdf-c-build
 netcdf-fortran
 netcdf-image
+netcdf-cxx4
 cov-analysis-linux64*
 cov-scan-build.sh
 deploy_coverity.sh
