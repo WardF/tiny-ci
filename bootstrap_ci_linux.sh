@@ -303,7 +303,7 @@ fi
 # * hdf4
 # * hdf5
 
-CMAKE_VER="cmake-3.2.1"
+CMAKE_VER="cmake-3.2.3"
 HDF4_VER="hdf-4.2.11"
 
 HDF5VER="1.8.14"
